@@ -59,7 +59,7 @@ namespace eimprovement.WebApplication.Tests.SCL_Tests
         #endregion
 
         [TestMethod]
-        public void GET_Pets_Available()
+        public void Get_Pets_Available()
         {
             var pets = new SCL.Pets();
             List<Models.Pet> results = pets.GetAvailablePets();
@@ -106,6 +106,15 @@ namespace eimprovement.WebApplication.Tests.SCL_Tests
 
             });
             Assert.IsTrue(results.HasValue);
+        }
+
+
+        [TestMethod]
+        public void Delete_Pet_By_id()
+        {
+            var pets = new SCL.Pets();
+            var results = pets.DeletePet(6598053714149417942);
+            Assert.IsTrue(results);
         }
     }
 }

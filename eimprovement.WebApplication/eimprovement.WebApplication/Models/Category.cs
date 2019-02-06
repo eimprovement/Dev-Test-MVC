@@ -9,5 +9,10 @@ namespace eimprovement.WebApplication.Models
     {
         public long id { get; set; }
         public string name { get; set; }
+
+        public static implicit operator Category(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

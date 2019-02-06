@@ -95,8 +95,11 @@ namespace eimprovement.WebApplication.SCL
             }            
         }
 
-        /// <summary></summary>
-        /// <param name="pet"></param>
+
+        /// <summary>
+        /// Add new pet
+        /// </summary>
+        /// <param name="id"></param>
         public long? AddNewPet(Pet pet)
         {
             try
@@ -104,7 +107,7 @@ namespace eimprovement.WebApplication.SCL
                 RestClient client = new RestClient(ApiAccessPoint);
                 RestRequest request = new RestRequest($"petstore/pet/");
                 request.AddHeader("Ocp-Apim-Subscription-Key", ApiSubscriptionKey);
-                request.AddBody(pet);
+                request.AddXmlBody(pet);
 
                 var response = client.Post<Pet>(request).Data;
                 return response.id;
@@ -113,6 +116,30 @@ namespace eimprovement.WebApplication.SCL
             {
                 Console.WriteLine($"Add a exception log with the detail: {ex.Message}");
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Deletion of pet
+        /// </summary>
+        /// <param name="id"></param>
+        public bool SoldPet(long id)
+        {
+            try
+            {
+                RestClient client = new RestClient(ApiAccessPoint);
+                RestRequest request = new RestRequest($"petstore/pet/{id}");
+                request.AddHeader("Ocp-Apim-Subscription-Key", ApiSubscriptionKey);
+        
+                var response = client.Delete(request);
+                return response.StatusCode ==  System.Net.HttpStatusCode.OK;
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"Add a exception log with the detail: {ex.Message}");
+                return false;
             }
         }
     }
