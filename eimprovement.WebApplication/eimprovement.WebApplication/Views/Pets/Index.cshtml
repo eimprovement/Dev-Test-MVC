@@ -22,11 +22,12 @@
     @foreach (var item in Model)
     {
         <tr>
-            <td> @item.Id</td>
-            <td> @item.Caterory</td>
+            <td> @item.Id.Value</td>
+            <td> @item.Category</td>
             <td> @item.Name</td>
             <td>
-                @Html.ActionLink("Set Pet as Sold", "Sold", new { id = item.Id })
+                @Html.ActionLink("Set Pet as Sold", "Sold", new { id = item.Id }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Delete this pet", "Remove", new { id = item.Id }, new { @class = "btn btn-primary" })
             </td>
         </tr>
     }

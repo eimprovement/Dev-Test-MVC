@@ -4,7 +4,6 @@ using System.Configuration;
 using eimprovement.WebApplication.Models;
 using RestSharp;
 
-
 namespace eimprovement.WebApplication.SCL
 {
     public class Pets
@@ -75,7 +74,7 @@ namespace eimprovement.WebApplication.SCL
         }
 
         /// <summary>
-        /// Ideally private
+        ///  Get the pet by id
         /// </summary>
         /// <param name="id"></param>
         public Pet GetPetById(long id)
@@ -95,6 +94,11 @@ namespace eimprovement.WebApplication.SCL
             }            
         }
 
+        public object DeletePet(long v)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         /// Add new pet
@@ -109,8 +113,9 @@ namespace eimprovement.WebApplication.SCL
                 request.AddHeader("Ocp-Apim-Subscription-Key", ApiSubscriptionKey);
                 request.AddXmlBody(pet);
 
-                var response = client.Post<Pet>(request).Data;
-                return response.id;
+
+                var response = client.Post<Pet>(request);
+                return response.Data.id;
             }
             catch (Exception ex)
             {
@@ -121,6 +126,28 @@ namespace eimprovement.WebApplication.SCL
 
         /// <summary>
         /// Deletion of pet
+        /// </summary>
+        /// <param name="id"></param>
+        public bool RemovePet(long id)
+        {
+            try
+            {
+                RestClient client = new RestClient(ApiAccessPoint);
+                RestRequest request = new RestRequest($"petstore/pet/{ id }");
+                request.AddHeader("Ocp-Apim-Subscription-Key", ApiSubscriptionKey);
+
+                var response = client.Delete(request);
+                return response.StatusCode == System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Add a exception log with the detail: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Mark pet as sold
         /// </summary>
         /// <param name="id"></param>
         public bool SoldPet(long id)

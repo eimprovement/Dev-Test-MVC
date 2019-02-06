@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace eimprovement.WebApplication.Controllers
@@ -22,18 +21,17 @@ namespace eimprovement.WebApplication.Controllers
         {
             try
             {
-                var availablePets = Pets.GetAvailablePets().Take(2);
-                var result = availablePets.Select(x => new PetViewModel
-                {
+                var result = new List<PetViewModel>();
+                var availablePets = Pets.GetAvailablePets();
 
-                    Id = x.id,
-                    Caterory = x.category.name,
-                    Name = x.name,
-                    PhotoUrl = x.photoUrls.Any() ? x.photoUrls.First() : string.Empty,
-                    Tags = x.tags.Any() ? x.tags.Select(t => t.name).ToArray() : new string[0]
-                });
-
-
+                if (availablePets.Any()) { 
+                    result = availablePets.Select(x => new PetViewModel
+                        {
+                            Id = x.id,
+                            Category = x.category != null ? x.category.name : string.Empty,
+                            Name = x.name                           
+                        }).ToList();
+                    }
                 return View(result);
             }
             catch (Exception ex)
@@ -82,19 +80,53 @@ namespace eimprovement.WebApplication.Controllers
             try
             {
                 // TODO: Validate Model
-                var pet = new Models.Pet
+                Pets.AddNewPet(new Models.Pet
                 {
+                    category = new Models.Category
+                    {
+                        id = 0,
+                        name = _pet["Category"]
+                    },
                     name = _pet["Name"],
-                    category = new Models.Category { id = 0, name = _pet["Category"] },
-                    photoUrls = new List<string> { _pet["photoUrls"] }
-                };
+                    photoUrls = new List<string> {_pet["PhotoUrl"]},
+                    status = "available",
+                    tags = new List<Models.Tag> {
+                         new Models.Tag
+                         {
+                             id=0,
+                             name = _pet["Tag"]
+                         }
+                 }
+                });
 
-                Pets.AddNewPet(pet);
                 return RedirectToAction("Index");
             }
             catch
             {
                 return View();
+            }
+        }
+
+
+        //Get: Set as Sold
+        //Notes: Improve UX, add a message
+        [HttpGet]
+        public ActionResult Remove(long id)
+        {
+            try
+            {
+                if (Pets.RemovePet(id))
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    throw new Exception("Problem deleting a pet");
+                }
+            }
+            catch (Exception ex)
+            {
+                return View("Error");
             }
         }
 
