@@ -1,0 +1,35 @@
+﻿@model IEnumerable<eimprovement.WebApplication.Models.Pet>
+@using eimprovement.WebApplication.Utils;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+    @Html.AntiForgeryToken()
+</p>
+
+<div class="form-group">
+    @Html.Label("Status", htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.DropDownList("PetStatusDropdown", new SelectList(Enum.GetValues(typeof(PetStatus))), new { @class = "form-control" })
+    </div>
+</div>
+<br /><br />
+
+      <div id="PetsTable">
+          @Html.Partial("_Table", Model)
+      </div>
+
+<script>
+    var DeletePetURL = '@Url.Action("Delete", "Pet")';
+    var IndexURL = '@Url.Action("Index", "Pet")';
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/Custom/Pet.js")
+}
