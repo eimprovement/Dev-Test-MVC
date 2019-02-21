@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eimprovement.WebApplication
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eimprovement.WebApplication.Tests", "eimprovement.WebApplication.Tests\eimprovement.WebApplication.Tests.csproj", "{DED5480B-EC35-4ED4-8360-499450F8D10C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eimprovement.Proxy", "eimprovement.Proxy\eimprovement.Proxy.csproj", "{BA061AF7-349C-4B34-BADE-1628456EF71E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{DED5480B-EC35-4ED4-8360-499450F8D10C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DED5480B-EC35-4ED4-8360-499450F8D10C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DED5480B-EC35-4ED4-8360-499450F8D10C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA061AF7-349C-4B34-BADE-1628456EF71E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA061AF7-349C-4B34-BADE-1628456EF71E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA061AF7-349C-4B34-BADE-1628456EF71E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA061AF7-349C-4B34-BADE-1628456EF71E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
