@@ -4,7 +4,7 @@
     ViewBag.Title = "Sold";
 }
 
-<h2>Do you want to sale a pet?</h2>
+<h2>Do you want to sell?</h2>
 
 
 @using (Html.BeginForm())
@@ -27,7 +27,7 @@
         <div class="form-group">
             @Html.Label("Status:", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.status, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.status, new { htmlAttributes = new { @class = "form-control", disabled = "true" } })
                 @Html.ValidationMessageFor(model => model.status, "", new { @class = "text-danger" })
             </div>
         </div>

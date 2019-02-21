@@ -16,6 +16,7 @@ namespace eimprovement.WebApplication.Controllers
 {
     public class PetController : Controller
     {
+        //Instance of proxy to call api's
         PetProxy callProxy = new PetProxy();
 
         [HttpGet]
@@ -118,6 +119,7 @@ namespace eimprovement.WebApplication.Controllers
         {
             try
             {
+                pet.status = "sold";
                 var body = JsonConvert.SerializeObject(pet);
                 var response = await callProxy.UpdatePet(body);
             }

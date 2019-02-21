@@ -13,12 +13,15 @@ namespace eimprovement.Proxy.Pet
 {
     public class PetProxy
     {
+        //Declaration of properties and variables 
+
         private string baseUrl { get; set; }
         private string keyAzure { get; set; }
         private string contentType { get; set; }
 
         HttpClient httpClient = new HttpClient();
 
+        //Initialitation with constructor
         public PetProxy()
         {
             baseUrl = ConfigurationManager.AppSettings.Get("BaseURL");
@@ -26,6 +29,11 @@ namespace eimprovement.Proxy.Pet
             contentType = ConfigurationManager.AppSettings.Get("ContentType");
         }
 
+        /// <summary>
+        /// Get all the pets 
+        /// </summary>
+        /// <param name="filter">filter available, sold, pending pets</param>
+        /// <returns></returns>
         public async Task<Response> GetPets(string filter = "available")
         {
             Response responseModel = new Response();
@@ -57,6 +65,11 @@ namespace eimprovement.Proxy.Pet
             return responseModel;
         }
 
+        /// <summary>
+        /// Method to save pets
+        /// </summary>
+        /// <param name="body">Content all the properties of pet</param>
+        /// <returns></returns>
         public async Task<Response> AddPet(string body)
         {
             Response responseModel = new Response();
@@ -83,13 +96,18 @@ namespace eimprovement.Proxy.Pet
                     };
                 }
             }
-            catch(Exception ex)
+            catch
             {
                 throw;
             }
             return responseModel;
         }
 
+        /// <summary>
+        /// Delete a pet by Id
+        /// </summary>
+        /// <param name="id">identificator of pet</param>
+        /// <returns></returns>
         public async Task<Response> DeletePet(string id)
         {
             Response responseModel = new Response();
@@ -121,6 +139,11 @@ namespace eimprovement.Proxy.Pet
             return responseModel;
         }
 
+        /// <summary>
+        /// Get a pet by Id
+        /// </summary>
+        /// <param name="id">identificator of pet</param>
+        /// <returns></returns>
         public async Task<Response> GetPetById(string id)
         {
             Response responseModel = new Response();
@@ -152,6 +175,11 @@ namespace eimprovement.Proxy.Pet
             return responseModel;
         }
 
+        /// <summary>
+        /// Update records of pets
+        /// </summary>
+        /// <param name="body">Content all the properties of pet</param>
+        /// <returns></returns>
         public async Task<Response> UpdatePet(string body)
         {
             Response responseModel = new Response();
