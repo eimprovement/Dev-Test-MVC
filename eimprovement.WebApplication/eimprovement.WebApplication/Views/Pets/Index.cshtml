@@ -1,0 +1,154 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Scripts.Render("~/bundles/modules/pets")
+
+<div class="row">
+    <div class="col-xs-12">
+        <h2>Pets Market</h2>
+        <hr class="ht-title" />
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4 col-md-2">
+        <div class="form-horizontal">
+            <label class="control-label">Status</label>
+            <div class="">
+                <select class="form-control lingo-select" data-bind="value: statusFilter" multiple>
+                    <option value="available">Available</option>
+                    <option value="pending">Pending</option>
+                    <option value="sold">Sold</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12">
+        <hr class="ht-title" />
+    </div>
+    <div class="col-xs-12">
+        <div class="progress text-center" data-bind="visible: arePetsLoading() == true">
+            <span class="">Loading...</span>
+        </div>
+        <div data-bind="visible: arePetsLoading() != true">
+            <p class="well text-center" data-bind="visible: petsFoundByStatus().length == 0">No pets fits this filter selection combination.</p>
+            <div class="table-responsive" data-bind="visible: petsFoundByStatus().length > 0">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Category</th>
+                            <th>Name</th>
+                            <th>Photos</th>
+                            <th>Tags</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: petsFoundByStatus">
+                        <tr>
+                            <td data-bind="text: $data.id"></td>
+                            <td>
+                                <span data-bind="text: $data.category != undefined ? $data.category.name : '--' "></span>
+                            </td>
+                            <td data-bind="text: $data.name"></td>
+                            <td data-bind="text: $data.photoUrls"></td>
+                            <td data-bind="text: $parent.serializeTags($data.tags)"></td>
+                            <td data-bind="text: $data.status"></td>
+                            <td>
+                                <a class="badge" data-bind="click: $parent.openPetManagementModal">Update</a>
+                                <a class="badge" data-bind="click: $parent.openPetManagementModal">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="petManagementModal" class="modal fade" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header z-depth-1">
+                <button type="button" class="close" data-dismiss="modal"><i class="fal fa-times"></i></button>
+                <h4 class="modal-title text-center">Pet Information</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row" data-bind="with: petData">
+                    <div class="col-xs-12">
+                        <div class="form-horizontal">
+                            <div class="col-xs-12">
+                                <label class="col-xs-4 control-label">Id</label>
+                                <div class="col-xs-8">
+                                    <p class="form-control-static custom-static-control-text pull-right" data-bind="text: id"></p>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <label class="col-xs-4 control-label">Category</label>
+                                <div class="col-xs-8">
+                                    <p class="form-control-static custom-static-control-text pull-right" data-bind="text: $data.category.name"></p>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <label class="col-xs-4 control-label">Name</label>
+                                <div class="col-xs-8">
+                                    <p class="form-control-static custom-static-control-text pull-right" data-bind="text: name"></p>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <label class="col-xs-4 control-label">Photos</label>
+                                <div class="col-xs-8" data-bind="foreach: photoUrls">
+                                    <p class="form-control-static custom-static-control-text pull-right">
+                                        <span data-bind="text: $data"></span>
+                                        <a class="badge" data-bind="click: $parent.removePhotoUrl">X</a>
+                                        &nbsp;
+                                    </p>
+
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <label class="col-xs-4 control-label">Tags</label>
+                                <div class="col-xs-8" data-bind="foreach: tags">
+                                    <p class="form-control-static custom-static-control-text pull-right">
+                                        <span data-bind="text: name"></span>
+                                        <a class="badge" data-bind="click: $parent.removeTag">X</a>
+                                        &nbsp;
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <label class="col-xs-4 control-label">Status</label>
+                                <div class="col-xs-8">
+                                    <p class="form-control-static custom-static-control-text pull-right" data-bind="text: status"></p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" data-bind="click: updatePetData">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var viewModel = new PetsVM();
+        ko.applyBindings(viewModel);
+
+    });
+
+
+</script>

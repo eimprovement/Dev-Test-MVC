@@ -25,6 +25,15 @@ namespace eimprovement.WebApplication
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/knockout").Include(
+                      "~/Scripts/knockout-3.5.0.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/core").Include(
+                      "~/Scripts/Core/core.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/modules/pets").Include(
+                      "~/Scripts/Pets/index.js"));
         }
     }
 }
