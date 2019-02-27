@@ -5,19 +5,44 @@ var CoreVM = function (baseApiUrl, apiSubscriptionKey) {
     coreSelf.basePetsApiUrl = baseApiUrl;
     
     coreSelf.petsApiAjaxHeaders =  {
-        "Ocp-Apim-Subscription-Key": apiSubscriptionKey
+        "Ocp-Apim-Subscription-Key": apiSubscriptionKey,
+        "Content-Type": "application/json"
     };
-    
-    if (!String.format) {
-        String.format = function (format) {
-            var args = Array.prototype.slice.call(arguments, 1);
-            return format.replace(/{(\d+)}/g, function (match, number) {
-                return typeof args[number] != 'undefined'
-                    ? args[number]
-                    : match
-                    ;
-            });
-        };
+
+    coreSelf.showUnexpectedErrorMessage = function () {
+        coreSelf.showMessage("alert", "There was an unexpected error, check your internet connection please.");
+    };
+
+    coreSelf.showMessage = function (type, message) {
+        coreSelf.scrollToDiv(0);
+        var $messagesSection = $("#messages");
+
+        $.each($messagesSection.children(), function () {
+            $(this).addClass("hidden");
+            $(this).children().last().text("");
+
+        });
+
+        var $message = $messagesSection.find("#" + type);
+        $message.children().last().html(message);
+        $message.removeClass("hidden");
+
+    };
+
+    coreSelf.scrollToDiv = function (position) {
+        $("html, body").animate({ scrollTop: position }, {
+            easing: "swing"
+        });
+    };
+
+    coreSelf.clearMessages = function () {
+        var $messagesSection = $("#messages");
+
+        $.each($messagesSection.children(), function () {
+            $(this).addClass("hidden");
+            $(this).children().last().text("");
+        });
+        
     };
 
     coreSelf.setCookie = function (cname, cvalue, exdays) {
@@ -97,7 +122,18 @@ var CoreVM = function (baseApiUrl, apiSubscriptionKey) {
             coreSelf.showUnexpectedErrorMessage();
         }
     };
-    
+
+    if (!String.format) {
+        String.format = function (format) {
+            var args = Array.prototype.slice.call(arguments, 1);
+            return format.replace(/{(\d+)}/g, function (match, number) {
+                return typeof args[number] != 'undefined'
+                    ? args[number]
+                    : match
+                    ;
+            });
+        };
+    };
 };
 
 

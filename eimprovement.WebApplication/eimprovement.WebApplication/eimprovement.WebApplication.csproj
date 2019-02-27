@@ -214,6 +214,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Nav\_NavBar.cshtml" />
     <Content Include="Views\Pets\Index.cshtml" />
+    <Content Include="Views\Shared\Global\_Messages.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

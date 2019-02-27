@@ -22,3 +22,17 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.global-errors-section-top{
+    padding-top: 20px;
+}
+
+.adjusted-table-text {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.display-inline{
+    display: inline;
+}
+​
