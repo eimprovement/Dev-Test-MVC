@@ -20,7 +20,9 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            String idtr = "tr" + item.id;
+            
+            <tr id="@idtr">
                 <td>
                     @Html.DisplayFor(modelItem => item.name)
                 </td>
@@ -29,6 +31,7 @@
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.id }, new { @class = "btn btn-warning" })
+                    <button class="btn btn-primary" onclick="FlagSold(@item.id)">Flag as Sold</button>
                 </td>
             </tr>
         }
@@ -37,3 +40,27 @@
 </table>
 
 
+<script type="text/javascript">
+    function FlagSold(idD) {
+        $.ajax({
+            url: '/Pets/FlagSold',
+            dataType: "json",
+            type: "POST",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ id: idD }),
+            async: true,
+            processData: false,
+            cache: false,
+            success: function (data) {
+                $("#messageModal .modal-body").html(data);
+                $('#messageModal').modal('show');
+                $("#tr" + idD + " td:nth-child(2)").html("sold");
+            },
+            error: function (xhr) {
+                $("#messageModal .modal-body").html('Error, could not flag Pet as sold');
+                $('#messageModal').modal('show');
+            }
+        });
+    }
+
+</script>

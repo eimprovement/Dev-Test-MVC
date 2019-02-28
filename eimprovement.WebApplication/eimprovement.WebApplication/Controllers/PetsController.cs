@@ -90,10 +90,10 @@ namespace eimprovement.WebApplication.Controllers
         public async Task<ActionResult> Create(Pet pet)
         {
             String queryString = "";
-            String uri = @"https://dev-test.azure-api.net/petstore/pet"+ "?" + queryString;
+            String uri = @"https://dev-test.azure-api.net/petstore/pet" + "?" + queryString;
 
             var content = new StringContent(new JavaScriptSerializer().Serialize(pet), Encoding.UTF8, "application/json");
-            
+
             var response = await client.PostAsync(uri, content);
             if (response.IsSuccessStatusCode)
             {//if the Pet was created, then redirect to the edit view of the new Pet
@@ -124,6 +124,35 @@ namespace eimprovement.WebApplication.Controllers
             else
             {//Pet not found
                 return new HttpNotFoundResult("Pet not Found...");
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> FlagSold(long id)
+        {
+            String queryString = "";
+            String uri = @"https://dev-test.azure-api.net/petstore/pet/" + id.ToString() + queryString;
+            Pet pet = null;
+            HttpResponseMessage response = await client.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+            {//The Pet was successfully recovered
+                pet = await response.Content.ReadAsAsync<Pet>();
+
+                //Using FormUrlEncodedContent to store Pet information
+                var content = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("id", pet.id.ToString()),
+                    new KeyValuePair<string, string>("name", pet.name),
+                    new KeyValuePair<string, string>("status","sold")
+                });
+                response = await client.PostAsync(uri, content);
+
+
+                return Json("Pet flagged as sold successfully", JsonRequestBehavior.AllowGet);
+            }
+            else
+            {//Pet not found
+                return Json("Could not flag Pet as sold...", JsonRequestBehavior.AllowGet);
             }
         }
 
