@@ -1,0 +1,73 @@
+﻿@model eimprovement.WebApplication.Models.Pet
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h4>Edit Pet</h4>
+<div class="row" style="">
+    <div class="col-lg-12">
+        <button name="delete_btn" onclick="Delete(@Model.id)" class="btn btn-danger float-right">Delete</button>
+        @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-primary float-right" })
+    </div>
+    
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.status, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+
+                @Html.DropDownListFor(x => x.status,eimprovement.WebApplication.Models.Pet.statuses,"-- Select a status --",new { @class = "form-control"})
+
+                @Html.ValidationMessageFor(model => model.status, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+}
+
+
+<script type="text/javascript">
+    function Delete(idD) {
+        $.ajax({
+            url: '/Pets/Delete',
+            dataType: "json",
+            type: "DELETE",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({ id: idD }),
+            async: true,
+            processData: false,
+            cache: false,
+            success: function (data) {
+                alert(data);
+                window.location = '@Url.Action("Index", "Pets")';
+            },
+            error: function (xhr) {
+                alert('Error, could not delete Pet!!!');
+            }
+        });
+    }
+
+</script>
