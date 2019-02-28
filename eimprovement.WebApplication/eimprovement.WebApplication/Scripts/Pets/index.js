@@ -12,6 +12,14 @@ var PetsVM = function () {
             number: { message: core.formValidationmessages.numberOnlyMessage, params: true }
         });
 
+        petSelf.isIdValid = ko.computed(function () {
+            if (petSelf.id() >= Number.MAX_SAFE_INTEGER) {
+                core.showMessage('warning', "This pet can't be updated or deleted at the time.");
+                return false;
+            }
+            return true;
+        }, this);
+
         petSelf.category = new function () {
             var catSelf = this;
 
@@ -240,7 +248,9 @@ var PetsVM = function () {
     self.openPetManagementModal = function (action, item) {
         self.currentAction(action);
         self.petData().update(item);
-        self.petManageMentModalReference.modal('show');
+        if (self.petData().isIdValid() == true) {
+            self.petManageMentModalReference.modal('show');
+        }
     };
 
     self.updatePetData = function () {
@@ -275,7 +285,7 @@ var PetsVM = function () {
         core.showMessage('alert', "There was an error updating the pet information on the system.");
         self.actionExecuting(false);
     };
-
+    
     self.deletePetData = function () {
         self.actionExecuting(true);
         var url = core.basePetsApiUrl + "/pet/" + self.petData().id();
