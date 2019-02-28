@@ -27,7 +27,8 @@ namespace eimprovement.WebApplication
                       "~/Content/site.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/knockout").Include(
-                      "~/Scripts/knockout-3.5.0.js"));
+                      "~/Scripts/knockout-3.5.0.js",
+                      "~/Scripts/knockout.validation.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/core").Include(
                       "~/Scripts/Core/core.js"));

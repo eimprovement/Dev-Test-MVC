@@ -6,184 +6,201 @@
 
 @Scripts.Render("~/bundles/modules/pets")
 
-<div class="row">
-    <div class="col-xs-12">
-        <h2>Pets Market</h2>
-        <hr class="ht-title" />
-    </div>
-</div>
-<div class="row">
-    <div class="col-xs-12">
+<div id="pets-maket-module">
+    <div class="row">
         <div class="col-xs-12">
-            <label class="control-label">Status</label>
-            <div class="">
-                <select class="form-control lingo-select" data-bind="selectedOptions: statusFilter" multiple>
-                    <option value="available">Available</option>
-                    <option value="pending">Pending</option>
-                    <option value="sold">Sold</option>
-                </select>
+            <h2>Pets Market</h2>
+            <hr class="ht-title" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-xs-12">
+                <label class="control-label">Filter By Status</label>
+                <div class="">
+                    <select class="form-control lingo-select" data-bind="selectedOptions: statusFilter" multiple>
+                        <option value="available">Available</option>
+                        <option value="pending">Pending</option>
+                        <option value="sold">Sold</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <hr class="ht-title" />
+            </div>
+            <div class="col-xs-12">
+                <button class="btn btn-sm btn-primary" data-bind="click: openPetManagementModal.bind($data, 'add')">Add New Pet +</button>
+                <Label class="pull-right">Total Results:&nbsp;<span data-bind="text: totalPetsFound"></span></Label>
             </div>
         </div>
         <div class="col-xs-12">
             <hr class="ht-title" />
         </div>
         <div class="col-xs-12">
-            <button class="btn btn-sm btn-primary" data-bind="click: openPetManagementModal.bind($data, 'add')">Add New Pet +</button>
-            <Label class="pull-right">Total Results:&nbsp;<span data-bind="text: totalPetsFound"></span></Label>
-        </div>
-    </div>
-    <div class="col-xs-12">
-        <hr class="ht-title" />
-    </div>
-    <div class="col-xs-12">
-        <div class="progress text-center" data-bind="visible: arePetsLoading() == true">
-            <span class="">Loading...</span>
-        </div>
-        <div data-bind="visible: arePetsLoading() != true">
-            <p class="well text-center" data-bind="visible: petsFoundByStatus().length == 0">No pet fits this filter selection combination.</p>
-            <div class="table-responsive" data-bind="visible: petsFoundByStatus().length > 0">
-                <table class="table table-striped adjusted-table-text">
-                    <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Category</th>
-                            <th>Name</th>
-                            <th>Photos</th>
-                            <th>Tags</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody data-bind="foreach: petsFoundByStatus">
-                        <tr>
-                            <td data-bind="text: $data.id"></td>
-                            <td >
-                                <span data-bind="text: $data.category != undefined ? $data.category.name : '--'"></span>
-                            </td>
-                            <td data-bind="text: $data.name"></td>
-                            <td>
-                                <div data-bind="foreach: $data.photoUrls">
-                                    <span data-bind="text: $data"></span>
-                                </div>
-                            </td>
-                            <td>
-                                <div data-bind="foreach: $data.tags">
-                                    <span data-bind="text: $data.name"></span>
-                                </div>
-                            </td>
-                            <td data-bind="text: $data.status"></td>
-                            <td>
-                                <a class="badge" data-bind="click: $parent.openPetManagementModal.bind($data, 'update')">Update</a>
-                                <a class="badge" data-bind="click: $parent.openPetManagementModal.bind($data, 'delete')">Delete</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="well text-center" data-bind="visible: arePetsLoading() == true">
+                <h4 class="">Loading...</h4>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div id="petManagementModal" class="modal fade" role="dialog" tabindex="-1">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header z-depth-1">
-                <button type="button" class="close" data-dismiss="modal"><i class="fal fa-times"></i></button>
-                <h4 class="modal-title text-center">Pet Information</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row" data-bind="with: petData">
-                    <div class="col-xs-12">
-                        <div class="form-horizontal">
-                            <div class="col-xs-12">
-                                <label class="col-xs-4 control-label">Id</label>
-                                <div class="col-xs-8" data-bind="visible: $parent.currentAction() == 'delete'">
-                                    <p class="form-control-static custom-static-control-text pull-right" data-bind="text: id"></p>
-                                </div>
-                                <div class="col-xs-8" data-bind="visible: $parent.currentAction() != 'delete'">
-                                    <input class="form-control pull-right" type="text" data-bind="value: id" />
-                                </div>
-                            </div>
-                            <div class="col-xs-12">
-                                <label class="col-xs-4 control-label">Category</label>
-                                <div class="col-xs-8" data-bind="visible: $parent.currentAction() == 'delete'">
-                                    <p class="form-control-static custom-static-control-text pull-right" data-bind="text: category.name"></p>
-                                </div>
-                                <div class="col-xs-8" data-bind="visible: $parent.currentAction() != 'delete'">
-                                    <input class="form-control pull-right form-inline" type="text" data-bind="value: category.id" placeholder="Cat. ID"/>
-                                    <input class="form-control pull-right form-inline" type="text" data-bind="value: category.name" placeholder="Cat. Name"/>
-                                </div>
-                            </div>
-                            <div class="col-xs-12">
-                                <label class="col-xs-4 control-label">Name</label>
-                                <div class="col-xs-8" data-bind="visible: $parent.currentAction() == 'delete'">
-                                    <p class="form-control-static custom-static-control-text pull-right" data-bind="text: name"></p>
-                                </div>
-                                <div class="col-xs-8" data-bind="visible: $parent.currentAction() != 'delete'">
-                                    <input class="form-control pull-right" type="text" data-bind="value: name" />
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12">
-                                <label class="col-xs-4 control-label">Photos</label>
-                                <div class="col-xs-8" data-bind="foreach: photoUrls">
-                                    <p class="form-control-static custom-static-control-text pull-right">
+            <div data-bind="visible: arePetsLoading() != true">
+                <p class="well text-center" data-bind="visible: petsFoundByStatus().length == 0">No pet fits this filter selection combination.</p>
+                <div class="table-responsive" data-bind="visible: petsFoundByStatus().length > 0">
+                    <table class="table table-striped adjusted-table-text">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Category</th>
+                                <th>Name</th>
+                                <th>Photos</th>
+                                <th>Tags</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: petsFoundByStatus">
+                            <tr>
+                                <td data-bind="text: $data.id"></td>
+                                <td>
+                                    <span data-bind="text: $data.category != undefined ? $data.category.name : '--'"></span>
+                                </td>
+                                <td data-bind="text: $data.name"></td>
+                                <td>
+                                    <div data-bind="foreach: $data.photoUrls">
                                         <span data-bind="text: $data"></span>
-                                        <a class="badge" data-bind="click: $parent.removePhotoUrl, visible: $root.currentAction() != 'delete'">X</a>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-xs-12">
-                                <label class="col-xs-4 control-label">Tags</label>
-                                <div class="col-xs-8" data-bind="foreach: tags">
-                                    <p class="form-control-static custom-static-control-text pull-right">
-                                        <span data-bind="text: name"></span>
-                                        <a class="badge" data-bind="click: $parent.removeTag, visible: $root.currentAction() != 'delete'">X</a>
-                                    </p>
-                                </div>
-                            </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div data-bind="foreach: $data.tags">
+                                        <span data-bind="text: $data.name"></span>
+                                    </div>
+                                </td>
+                                <td data-bind="text: $data.status"></td>
+                                <td>
+                                    <a class="badge" data-bind="click: $parent.openPetManagementModal.bind($data, 'update')">Update</a>
+                                    <a class="badge" data-bind="click: $parent.openPetManagementModal.bind($data, 'delete')">Delete</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                            <div class="col-xs-12">
-                                <label class="col-xs-4 control-label">Status</label>
-                                <div class="col-xs-8" data-bind="visible: $parent.currentAction() == 'delete'">
-                                    <p class="form-control-static custom-static-control-text pull-right" data-bind="text: status"></p>
+    <!-- Modal -->
+    <div id="petManagementModal" class="modal fade" role="dialog" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><i class="fal fa-times"></i></button>
+                    <h4 class="modal-title text-center">Pet Information</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row" data-bind="with: petData">
+                        <div class="col-xs-12">
+                            <div class="form-horizontal">
+                                <div class="col-xs-12">
+                                    <label class="col-xs-4 control-label">Id.<span class="red-text">*</span></label>
+                                    <div class="col-xs-8" data-bind="visible: $parent.currentAction() == 'delete'">
+                                        <p class="form-control-static custom-static-control-text pull-right" data-bind="text: id"></p>
+                                    </div>
+                                    <div class="col-xs-8" data-bind="visible: $parent.currentAction() != 'delete'">
+                                        <input class="form-control pull-right" type="text" data-bind="value: id" placeholder="Pet Id." />
+                                    </div>
                                 </div>
-                                <div class="col-xs-8" data-bind="visible: $parent.currentAction() != 'delete'">
-                                    <select class="form-control pull-right" data-bind="value: status">
-                                        <option value="available">Available</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="sold">Sold</option>
-                                    </select>
+                                <div class="col-xs-12">
+                                    <label class="col-xs-4 control-label">Category</label>
+                                    <div class="col-xs-8" data-bind="visible: $parent.currentAction() == 'delete'">
+                                        <p class="form-control-static custom-static-control-text pull-right" data-bind="text: category.name"></p>
+                                    </div>
+                                    <div class="col-xs-8" data-bind="visible: $parent.currentAction() != 'delete'">
+                                        <input class="form-control pull-right form-inline" type="text" data-bind="value: category.id" placeholder="Cat. Id." />
+                                        <input class="form-control pull-right form-inline" type="text" data-bind="value: category.name" placeholder="Cat. Name" />
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <label class="col-xs-4 control-label">Name<span class="red-text">*</span></label>
+                                    <div class="col-xs-8" data-bind="visible: $parent.currentAction() == 'delete'">
+                                        <p class="form-control-static custom-static-control-text pull-right" data-bind="text: name"></p>
+                                    </div>
+                                    <div class="col-xs-8" data-bind="visible: $parent.currentAction() != 'delete'">
+                                        <input class="form-control pull-right" type="text" data-bind="value: name" placeholder="Pet Name" />
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12">
+                                    <label class="col-xs-4 control-label">Photos</label>
+                                    <div class="col-xs-8" data-bind="foreach: photoUrls">
+                                        <p class="form-control-static custom-static-control-text pull-right">
+                                            <span data-bind="text: $data"></span>
+                                            <a class="badge" data-bind="click: $parent.removePhotoUrl, visible: $root.currentAction() != 'delete'">X</a>
+                                        </p>
+                                    </div>
+                                    <div data-bind="visible: $parent.currentAction() != 'delete'">
+                                        <a class="col-xs-3 col-xs-offset-9 text-right padded-floating-right-anchor" role="button" data-bind="visible: addingNewPhotoUrl() == false, click: toggleNewPhotoUrlFlag">Add photo url</a>
+                                        <div class="col-xs-8 col-xs-offset-4" data-bind="visible: addingNewPhotoUrl() == true">
+                                            <input class="form-control pull-right" type="text" data-bind="value: newPhotoUrl" placeholder="Photo Url" />
+                                            <button class="btn btn-small btn-primary" data-bind="click: addNewPhotoUrl">+</button>
+                                            <a class="col-xs-2 col-xs-offset-10 text-right padded-floating-right-anchor" role="button" data-bind="visible: addingNewPhotoUrl() == true, click: toggleNewPhotoUrlFlag">Close</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12">
+                                    <label class="col-xs-4 control-label">Tags</label>
+                                    <div class="col-xs-8" data-bind="foreach: tags">
+                                        <p class="form-control-static custom-static-control-text pull-right">
+                                            <span data-bind="text: name"></span>
+                                            <a class="badge" data-bind="click: $parent.removeTag, visible: $root.currentAction() != 'delete'">X</a>
+                                        </p>
+                                    </div>
+                                    <div data-bind="visible: $parent.currentAction() != 'delete'">
+                                        <a class="col-xs-2 col-xs-offset-10 text-right padded-floating-right-anchor" role="button" data-bind="visible: addingNewTag() == false, click: toggleNewTagFlag">Add tag</a>
+                                        <div class="col-xs-8 col-xs-offset-4" data-bind="visible: addingNewTag() == true">
+                                            <input class="form-control pull-right" type="text" data-bind="value: newTag.id" placeholder="Tag Id." />
+                                            <input class="form-control pull-right" type="text" data-bind="value: newTag.name" placeholder="Tag Name" />
+                                            <button class="btn btn-small btn-primary" data-bind="click: addNewTag">+</button>
+                                            <a class="col-xs-2 col-xs-offset-10 text-right padded-floating-right-anchor" role="button" data-bind="visible: addingNewTag() == true, click: toggleNewTagFlag">Close</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12">
+                                    <label class="col-xs-4 control-label">Status<span class="red-text">*</span></label>
+                                    <div class="col-xs-8" data-bind="visible: $parent.currentAction() == 'delete'">
+                                        <p class="form-control-static custom-static-control-text pull-right" data-bind="text: status"></p>
+                                    </div>
+                                    <div class="col-xs-8" data-bind="visible: $parent.currentAction() != 'delete'">
+                                        <select class="form-control pull-right" data-bind="value: status">
+                                            <option value="available">Available</option>
+                                            <option value="pending">Pending</option>
+                                            <option value="sold">Sold</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                <div class="display-inline" data-bind="visible: actionExecuting() == false">
-                    <button type="button" class="btn btn-primary" data-bind="click: addPetData, visible: currentAction() == 'add'">Add</button>
-                    <button type="button" class="btn btn-primary" data-bind="click: updatePetData, visible: currentAction() == 'update'">Update</button>
-                    <button type="button" class="btn btn-primary" data-bind="click: deletePetData, visible: currentAction() == 'delete'">Delete</button>
-                </div>
-                <div class="display-inline" data-bind="visible: actionExecuting() == true">
-                    <button type="button" class="btn btn-primary" data-bind="visible: currentAction() == 'add'" disabled>Adding...</button>
-                    <button type="button" class="btn btn-primary" data-bind="visible: currentAction() == 'update'" disabled>Updating...</button>
-                    <button type="button" class="btn btn-primary" data-bind="visible: currentAction() == 'delete'" disabled>Deleting...</button>
+                <div class="modal-footer">
+                    <span class="pull-left" data-bind="visible: currentAction() != 'delete'"><span class="red-text">*</span>&nbsp;Required fields.</span>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                    <div class="display-inline" data-bind="visible: actionExecuting() == false">
+                        <button type="button" class="btn btn-primary" data-bind="click: addPetData, visible: currentAction() == 'add', enable: petData.isValid() == true">Add</button>
+                        <button type="button" class="btn btn-primary" data-bind="click: updatePetData, visible: currentAction() == 'update', enable: petData.isValid() == true">Update</button>
+                        <button type="button" class="btn btn-primary" data-bind="click: deletePetData, visible: currentAction() == 'delete'">Delete</button>
+                    </div>
+                    <div class="display-inline" data-bind="visible: actionExecuting() == true">
+                        <button type="button" class="btn btn-primary" data-bind="visible: currentAction() == 'add'" disabled>Adding...</button>
+                        <button type="button" class="btn btn-primary" data-bind="visible: currentAction() == 'update'" disabled>Updating...</button>
+                        <button type="button" class="btn btn-primary" data-bind="visible: currentAction() == 'delete'" disabled>Deleting...</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 
 <script type="text/javascript">
     $(document).ready(function () {
         var viewModel = new PetsVM();
-        ko.applyBindings(viewModel);
+        ko.applyBindings(viewModel, $('#pets-maket-module')[0]);
     });
 </script>

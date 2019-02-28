@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace eimprovement.WebApplication.Controllers
 {
-    public class PetsController : Controller
+    public class PetsController : BaseController
     {
         // GET: Pets
         public ActionResult Index()

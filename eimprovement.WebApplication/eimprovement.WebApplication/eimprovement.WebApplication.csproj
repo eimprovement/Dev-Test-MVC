@@ -160,6 +160,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PetsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -194,6 +195,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\knockout-3.5.0.debug.js" />
     <Content Include="Scripts\knockout-3.5.0.js" />
+    <Content Include="Scripts\knockout.validation.js" />
+    <Content Include="Scripts\knockout.validation.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\Pets\index.js" />
     <Content Include="Web.config">
@@ -215,10 +218,12 @@
     <Content Include="Views\Shared\Nav\_NavBar.cshtml" />
     <Content Include="Views\Pets\Index.cshtml" />
     <Content Include="Views\Shared\Global\_Messages.cshtml" />
+    <Content Include="Scripts\knockout.validation.min.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

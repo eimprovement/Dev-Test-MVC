@@ -35,4 +35,30 @@ textarea {
 .display-inline{
     display: inline;
 }
-​
+
+input {
+    margin-bottom: 10px;
+}
+
+.validationMessage {
+    display: block;
+    float: right;
+    color: red;
+    margin-top: -5px;
+    margin-bottom: 5px;
+}
+
+.red-text{
+    color: red;
+}
+
+.padded-floating-right-anchor {
+    margin-top: -5px !important;
+    padding-bottom: 5px;
+    margin-right: -15px !important;
+}
+
+.modal-header {
+    background-color: darkslategray;
+    color: ghostwhite;
+}

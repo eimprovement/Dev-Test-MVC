@@ -4,38 +4,64 @@ var PetsVM = function () {
 
     self.petManageMentModalReference = $('#petManagementModal');
 
-    self.petData = new function () {
+    self.petData = ko.validatedObservable(new function(){
         var petSelf = this;
         
-        petSelf.id = ko.observable();
-        petSelf.category = new function () {
-            catSelf = this;
+        petSelf.id = ko.observable().extend({
+            required: { message: core.formValidationmessages.requiredFieldMessage, params: true },
+            number: { message: core.formValidationmessages.numberOnlyMessage, params: true }
+        });
 
-            catSelf.id = ko.observable();
-            catSelf.name = ko.observable();
+        petSelf.category = new function () {
+            var catSelf = this;
+
+            catSelf.id = ko.observable().extend({
+                number: { message: core.formValidationmessages.numberOnlyMessage, params: true }
+            });
+
+            catSelf.name = ko.observable().extend({
+                pattern: { message: core.formValidationmessages.alphanumericAndSpacesOnlyMessage, params: core.commonRegexPatters.alphanumericAndSpacesOnlyRegex }
+            });
 
             catSelf.update = function (cat) {
                 catSelf.id(cat.id);
                 catSelf.name(cat.name);
             };
-        };
 
-        petSelf.name = ko.observable();
+            catSelf.reset = function () {
+                catSelf.update({});
+                catSelf.id.isModified(false);
+                catSelf.name.isModified(false);
+            };
+        };
+        
+        petSelf.name = ko.observable().extend({
+            required: { message: core.formValidationmessages.requiredFieldMessage, params: true },
+            pattern: { message: core.formValidationmessages.alphanumericAndSpacesOnlyMessage, params: core.commonRegexPatters.alphanumericAndSpacesOnlyRegex }
+        });
+
         petSelf.photoUrls = ko.observableArray();
+
         petSelf.tags = ko.observableArray();
-        petSelf.status = ko.observable();
+        
+        petSelf.status = ko.observable().extend({
+            required: { message: core.formValidationmessages.requiredFieldMessage, params: true }
+        });
         
         petSelf.update = function (data) {
             petSelf.id(data.id);
 
             petSelf.category.id(undefined);
+
             petSelf.category.name(undefined);
 
             if (data.category != null) {
                 petSelf.category.id(data.category.id);
                 petSelf.category.name(data.category.name);
             }
+
             petSelf.name(data.name);
+
             petSelf.photoUrls([]);
 
             if (data.photoUrls != null) {
@@ -55,13 +81,47 @@ var PetsVM = function () {
             petSelf.status(data.status);
         };
 
+        petSelf.reset = function () {
+            petSelf.update({});
+            petSelf.id.isModified(false);
+            petSelf.category.reset();
+            petSelf.name.isModified(false);
+            petSelf.status.isModified(false);
+            petSelf.newTag.reset();
+            petSelf.newPhotoUrl(null);
+            petSelf.newPhotoUrl.isModified(false);
+            petSelf.addingNewPhotoUrl(false);
+            petSelf.addingNewTag(false);
+        };
+
         petSelf.removePhotoUrl = function (item) {
             if (petSelf.photoUrls() == null || petSelf.photoUrls().length <= 0) {
                 return;
             }
 
             petSelf.photoUrls.remove(item);
-        }
+        };
+
+        petSelf.addingNewPhotoUrl = ko.observable(false);
+
+        petSelf.newPhotoUrl = ko.observable("").extend({
+            url: { message: core.formValidationmessages.urlOnlyMessage, onlyIf: function () { return petSelf.addingNewPhotoUrl() == true; } }
+        });
+        
+        petSelf.toggleNewPhotoUrlFlag = function () {
+            petSelf.addingNewPhotoUrl(!petSelf.addingNewPhotoUrl());
+        };
+
+        petSelf.addNewPhotoUrl = function () {
+            if (petSelf.newPhotoUrl() == null) {
+                return;
+            } else if (petSelf.newPhotoUrl.isValid() == false) {
+                return;
+            }
+            petSelf.photoUrls.push(petSelf.newPhotoUrl());
+            petSelf.newPhotoUrl(null);
+            petSelf.newPhotoUrl.isModified(false);
+        };
 
         petSelf.removeTag = function (item) {
             if (petSelf.tags() == null || petSelf.tags().length <= 0) {
@@ -69,17 +129,53 @@ var PetsVM = function () {
             }
 
             petSelf.tags.remove(item);
-        }
-        
-    };
+        };
 
-    self.currentAction = ko.observable();
+        petSelf.addingNewTag = ko.observable(false);
+
+        petSelf.newTag = new function () {
+            var tagSelf = this;
+
+            tagSelf.id = ko.observable().extend({
+                number: { message: core.formValidationmessages.numberOnlyMessage, onlyIf: function () { return petSelf.addingNewTag() == true; } }
+            });
+
+            tagSelf.name = ko.observable().extend({
+                pattern: { message: core.formValidationmessages.alphanumericAndSpacesOnlyMessage, params: core.commonRegexPatters.alphanumericAndSpacesOnlyRegex, onlyIf: function() { return petSelf.addingNewTag() == true; } }
+            });
+
+            tagSelf.update = function (tag) {
+                tagSelf.id(tag.id);
+                tagSelf.name(tag.name);
+            };
+
+            tagSelf.reset = function () {
+                tagSelf.update({});
+                tagSelf.id.isModified(false);
+                tagSelf.name.isModified(false);
+            };
+        };
+        
+        petSelf.toggleNewTagFlag = function () {
+            petSelf.addingNewTag(!petSelf.addingNewTag());
+        };
+
+        petSelf.addNewTag = function () {
+            if (petSelf.newTag.id() == null || petSelf.newTag.name() == null) {
+                return;
+            } else if (petSelf.newTag.id.isValid() == false || petSelf.newTag.name.isValid() == false) {
+                return;
+            }
+            petSelf.tags.push({ id: petSelf.newTag.id(), name: petSelf.newTag.name() });
+            petSelf.newTag.reset();
+        };
+    });
+    
+    self.currentAction = ko.observable().extend({ notify: 'always' });
 
     self.currentAction.subscribe(function (newValue) {
         core.clearMessages();
-        if (newValue == "add") {
-            self.petData.update({});
-        }
+        self.petData().reset();
     });
 
     self.actionExecuting = ko.observable(false);
@@ -105,7 +201,7 @@ var PetsVM = function () {
 
     self.findPetsByStatus = function () {
 
-        if (self.statusFilter() == undefined) {
+        if (self.statusFilter() == undefined || self.statusFilter().length == 0) {
             return;
         }
 
@@ -143,14 +239,14 @@ var PetsVM = function () {
     
     self.openPetManagementModal = function (action, item) {
         self.currentAction(action);
-        self.petData.update(item);
+        self.petData().update(item);
         self.petManageMentModalReference.modal('show');
     };
 
     self.updatePetData = function () {
         self.actionExecuting(true);
         var url = core.basePetsApiUrl + "/pet";
-        var formData = ko.toJSON(self.petData);
+        var formData = ko.toJSON(self.petData());
         $.ajax({
             url: url,
             type: "PUT",
@@ -167,18 +263,22 @@ var PetsVM = function () {
         self.petManageMentModalReference.modal('hide');
         core.showMessage('success', "Pet updated successfully.");
         self.actionExecuting(false);
-        self.reFilter();
+        if (self.statusFilter.indexOf(self.petData().status()) == -1) {
+            self.statusFilter.push(self.petData().status());
+        } else {
+            self.reFilter();
+        }
     };
 
     self.petUpdateErrorHandler = function () {
         self.petManageMentModalReference.modal('hide');
-        alert("There was an error updating the pet information on the system.");
+        core.showMessage('alert', "There was an error updating the pet information on the system.");
         self.actionExecuting(false);
     };
 
     self.deletePetData = function () {
         self.actionExecuting(true);
-        var url = core.basePetsApiUrl + "/pet/" + self.petData.id();
+        var url = core.basePetsApiUrl + "/pet/" + self.petData().id();
         $.ajax({
             url: url,
             type: "DELETE",
@@ -209,7 +309,7 @@ var PetsVM = function () {
     self.addPetData = function () {
         self.actionExecuting(true);
         var url = core.basePetsApiUrl + "/pet";
-        var formData = ko.toJSON(self.petData);
+        var formData = ko.toJSON(self.petData());
         $.ajax({
             url: url,
             type: "POST",
@@ -217,8 +317,8 @@ var PetsVM = function () {
             contentType: "application/json; charset=utf-8",
             timeout: 20000,
             headers: core.petsApiAjaxHeaders,
-            success: self.petUpdateSuccessHandler,
-            error: self.petUpdateErrorHandler
+            success: self.petAddSuccessHandler,
+            error: self.petAddErrorHandler
         });
     };
 
@@ -226,7 +326,11 @@ var PetsVM = function () {
         self.petManageMentModalReference.modal('hide');
         core.showMessage('success', "Pet added successfully.");
         self.actionExecuting(false);
-        self.reFilter();
+        if (self.statusFilter.indexOf(self.petData().status()) == -1) {
+            self.statusFilter.push(self.petData().status());
+        } else {
+            self.reFilter();
+        }
     };
 
     self.petAddErrorHandler = function (error) {

@@ -8,11 +8,7 @@ var CoreVM = function (baseApiUrl, apiSubscriptionKey) {
         "Ocp-Apim-Subscription-Key": apiSubscriptionKey,
         "Content-Type": "application/json"
     };
-
-    coreSelf.showUnexpectedErrorMessage = function () {
-        coreSelf.showMessage("alert", "There was an unexpected error, check your internet connection please.");
-    };
-
+    
     coreSelf.showMessage = function (type, message) {
         coreSelf.scrollToDiv(0);
         var $messagesSection = $("#messages");
@@ -44,96 +40,31 @@ var CoreVM = function (baseApiUrl, apiSubscriptionKey) {
         });
         
     };
-
-    coreSelf.setCookie = function (cname, cvalue, exdays) {
-        var d = new Date();
-        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-        var expires = "expires=" + d.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    }
-
-    coreSelf.getCookie = function (name) {
-        var dc = document.cookie;
-        var prefix = name + "=";
-        var begin = dc.indexOf("; " + prefix);
-        if (begin == -1) {
-            begin = dc.indexOf(prefix);
-            if (begin != 0) return null;
-        }
-        else {
-            begin += 2;
-            var end = document.cookie.indexOf(";", begin);
-            if (end == -1) {
-                end = dc.length;
-            }
-        }
-
-        return decodeURI(dc.substring(begin + prefix.length, end));
+    
+    coreSelf.formValidationmessages = {
+        requiredFieldMessage: "This field is required.",
+        numberOnlyMessage: "This field allows numbers only.",
+        alphanumericAndSpacesOnlyMessage: "This field allows numbers, letters and spaces only.",
+        urlOnlyMessage: "This field allows Urls only."
     };
 
-    coreSelf.copyContentToClipboard = function (target, content, message) {
-        try {
-            const el = document.createElement('textarea');
-            el.value = content;
-            el.setAttribute('readonly', '');
-            el.style.position = 'absolute';
-            el.style.left = '-9999px';
-            if (target == null) {
-                document.body.appendChild(el);
-            } else {
-                $(target.parentElement).append(el);
-            }
-
-            //el.focus();
-            el.select();
-            var success = document.execCommand('copy');
-            if (success) {
-                if (target == null) {
-                    coreSelf.showMessage('success', message);
-                } else {
-                    var $target = $(target);
-                    $target.addClass('animated bounceIn');
-                    setTimeout(function () {
-                        $target.removeClass('animated bounceIn');
-                        var original = $target.data('originalTitle');
-                        $target.attr('title', message)
-                            .tooltip('fixTitle')
-                            .tooltip('show');
-                        setTimeout(function () {
-                            $target.attr('title', original)
-                                .tooltip('fixTitle');
-                            if ($target.data('bs.tooltip').tip().hasClass('in')) {
-                                $target.tooltip('show');
-                            }
-                        }, 1500);
-                    }, 300);
-                }
-            } else {
-                coreSelf.showUnexpectedErrorMessage();
-            }
-
-            if (target == null) {
-                document.body.removeChild(el);
-            } else {
-                $(el).remove();
-            }
-
-        } catch (e) {
-            coreSelf.showUnexpectedErrorMessage();
-        }
+    coreSelf.commonRegexPatters = {
+        alphanumericAndSpacesOnlyRegex: '^[a-zA-Z0-9 ]*$'
     };
 
-    if (!String.format) {
-        String.format = function (format) {
-            var args = Array.prototype.slice.call(arguments, 1);
-            return format.replace(/{(\d+)}/g, function (match, number) {
-                return typeof args[number] != 'undefined'
-                    ? args[number]
-                    : match
-                    ;
-            });
-        };
+    //Knockout validation taken from: https://jes.al/2014/07/url-validation-knockoutjs/
+    ko.validation.rules['url'] = {
+        validator: function (val, required) {
+            if (!val) {
+                return !required
+            }
+            val = val.replace(/^\s+|\s+$/, ''); //Strip whitespace
+            //Regex by Diego Perini from: http://mathiasbynens.be/demo/url-regex
+            return val.match(/^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.‌​\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[‌​6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1‌​,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00‌​a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u‌​00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$/i);
+        },
+        message: "Urls only alowed."
     };
+    ko.validation.registerExtenders();
 };
 
 

@@ -28,7 +28,7 @@
 
     <script type="text/javascript">
 
-        window.core = new CoreVM("https://dev-test.azure-api.net/petstore", "0051390ce39046ddae99ce7a439f9b3f");
+        window.core = new CoreVM("@ViewData["PetsApiBaseUrl"]", "@ViewData["PetsApiKey"]");
 
         $(document).ready(function () {
         });
