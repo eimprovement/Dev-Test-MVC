@@ -62,13 +62,13 @@
             cache: false,
             success: function (data) {
                 $("#messageModal .modal-body").html(data);
-                $('#messageModal').modal(options);
+                $('#messageModal').modal('show');
                 //alert(data);
                 window.location = '@Url.Action("Index", "Pets")';
             },
             error: function (xhr) {
                 $("#messageModal .modal-body").html('Error, could not delete Pet');
-                $('#messageModal').modal(options);
+                $('#messageModal').modal('show');
             }
         });
     }
