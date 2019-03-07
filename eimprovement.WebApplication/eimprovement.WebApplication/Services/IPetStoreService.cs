@@ -9,6 +9,8 @@ namespace eimprovement.WebApplication.Services
     {
         Task<IEnumerable<PetViewModel>> GetPetsAsync();
         Task AddPetAsync(AddPetViewModel model);
-        Task DeletePet(long id);
+        Task<UpdatePetViewModel> FindPetForUpdateAsync(long petId);
+        Task UpdatePetAsync(UpdatePetViewModel model);
+        Task DeletePetAsync(long petId);
     }
 }

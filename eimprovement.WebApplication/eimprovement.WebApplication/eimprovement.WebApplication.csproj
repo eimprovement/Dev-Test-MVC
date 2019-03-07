@@ -177,6 +177,7 @@
     </Compile>
     <Compile Include="Models\AddPetViewModel.cs" />
     <Compile Include="Models\PetViewModel.cs" />
+    <Compile Include="Models\UpdatePetViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IPetStoreService.cs" />
     <Compile Include="Services\PetStoreService.cs" />
@@ -222,6 +223,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Pets\Index.cshtml" />
     <Content Include="Views\Pets\Add.cshtml" />
+    <Content Include="Views\Pets\Update.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

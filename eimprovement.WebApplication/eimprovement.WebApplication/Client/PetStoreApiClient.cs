@@ -36,17 +36,42 @@ namespace eimprovement.WebApplication.Client
             return await ReadContentAsAsync<List<PetResource>>(response);
         }
 
-        public async Task AddPetAsync(PetResource petResource)
+        public async Task<PetResource> FindPetByIdAsync(long petId)
+        {
+            var url = $"petstore/pet/{petId}";
+            HttpResponseMessage response = await Client.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new PetStoreApiException($"Failed to add find pet in petstore api. Pet Id = {petId}. Api returned Status: {response.StatusCode}");
+            }
+
+            return await ReadContentAsAsync<PetResource>(response);
+        }
+
+        public async Task AddPetAsync(PetResource pet)
         {
             var url = "/petstore/pet";
-            var json = SerializeToJson(petResource);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpContent content = CreateJsonContent(pet);
 
             HttpResponseMessage response = await Client.PostAsync(url, content);
 
             if (!response.IsSuccessStatusCode)
             {
                 throw new PetStoreApiException($"Failed to add new pet to petstore api. Api returned Status: {response.StatusCode}");
+            }
+        }
+
+        public async Task UpdatePetAsync(PetResource pet)
+        {
+            var url = @"petstore/pet";
+            HttpContent content = CreateJsonContent(pet);
+
+            HttpResponseMessage response = await Client.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new PetStoreApiException($"Failed to update pet in petstore api. Pet Id = {pet.Id}. Api returned Status: {response.StatusCode}");
             }
         }
 
@@ -64,6 +89,11 @@ namespace eimprovement.WebApplication.Client
         private async Task<T> ReadContentAsAsync<T>(HttpResponseMessage response) {
             var content = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<T>(content);
+        }
+
+        private HttpContent CreateJsonContent(object fromObject) {
+            string json = SerializeToJson(fromObject);
+            return new StringContent(json, Encoding.UTF8, "application/json");
         }
 
         private string SerializeToJson(object toSerialize) {

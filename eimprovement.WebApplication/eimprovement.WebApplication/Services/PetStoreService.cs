@@ -30,7 +30,25 @@ namespace eimprovement.WebApplication.Services
             await Client.AddPetAsync(newPet);
         }
 
-        public async Task DeletePet(long petId)
+        public async Task<UpdatePetViewModel> FindPetForUpdateAsync(long petId)
+        {
+            PetResource pet = await Client.FindPetByIdAsync(petId);
+
+            return new UpdatePetViewModel
+            {
+                Id = pet.Id,
+                Name = pet.Name
+            };
+        }
+
+        public async Task UpdatePetAsync(UpdatePetViewModel model)
+        {
+            PetResource toUpdate = await Client.FindPetByIdAsync(model.Id);
+            toUpdate.Name = model.Name;
+            await Client.UpdatePetAsync(toUpdate);
+        }
+
+        public async Task DeletePetAsync(long petId)
         {
             await Client.DeletePetAsync(petId);
         }

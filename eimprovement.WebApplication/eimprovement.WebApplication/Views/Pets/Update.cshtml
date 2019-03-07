@@ -1,12 +1,13 @@
-﻿@model  eimprovement.WebApplication.Models.AddPetViewModel
+﻿@model  eimprovement.WebApplication.Models.UpdatePetViewModel
 
-<h2>Add a new pet</h2>
+<h2>Update pet: @Model.Name</h2>
 
 @using (@Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
-    
+    @Html.HiddenFor(m => m.Id)
+
     <div class="form-group">
         @Html.LabelFor(m => m.Name)
         @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })

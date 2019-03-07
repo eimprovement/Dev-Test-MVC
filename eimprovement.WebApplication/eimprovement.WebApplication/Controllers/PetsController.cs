@@ -26,6 +26,7 @@ namespace eimprovement.WebApplication.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Add(AddPetViewModel model)
         {
             if (ModelState.IsValid)
@@ -37,11 +38,30 @@ namespace eimprovement.WebApplication.Controllers
             return View();
         }
 
+        public async Task<ActionResult> Update(long id)
+        {
+            UpdatePetViewModel model = await Service.FindPetForUpdateAsync(id);
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Update(UpdatePetViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                await Service.UpdatePetAsync(model);
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(long id)
         {
-            await Service.DeletePet(id);
+            await Service.DeletePetAsync(id);
             return new EmptyResult();
         }
     }
