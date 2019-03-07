@@ -1,0 +1,77 @@
+﻿@model IEnumerable<eimprovement.WebApplication.Models.PetViewModel>
+
+@{
+    ViewBag.Title = "Pets Home Page";
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/bootstrap-confirmation")
+
+    <script type="text/javascript">
+        const antiforgeryToken = $("#__AjaxAntiForgeryForm input").val();
+
+        $('.jsDeleteLink').confirmation({
+            copyAttributes: '',
+            onConfirm: function () {
+                const $link = $(this);
+                const url = $link.attr("href");
+                const dataObject = {
+                    __RequestVerificationToken: antiforgeryToken
+                };
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: dataObject,
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log("ERROR! status: " + textStatus + "error thrown: " + errorThrown);
+                    },
+                    success: function () {
+                        location.reload();
+                    }
+                });
+            }
+        });
+    </script>
+}
+
+<div class="jumbotron">
+    <h1>PetStore Online</h1>
+    <p class="lead">Welcome to the Pet viewer and Editor Application</p>
+</div>
+
+<h2>Pet List</h2>
+<p>
+    @Html.ActionLink("Add new pet", "Add", null, new { @class = "btn btn-primary" } )
+</p>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "jsDeleteLink" })
+                        @*@Html.ActionLink("Details", "Details", new { id = item.CustomerID }) *@
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
