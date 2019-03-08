@@ -32,7 +32,7 @@ namespace eimprovement.WebApplication
 
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
 
-            PetStoreApiClient petStoreClient = CreatePetStoreServiceClient();
+            PetStoreApiClient petStoreClient = CreatePetStoreClient();
             builder.RegisterInstance(petStoreClient).As<IPetStoreApiClient>();
 
             builder.RegisterType<PetStoreService>().As<IPetStoreService>();
@@ -41,7 +41,7 @@ namespace eimprovement.WebApplication
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
         }
 
-        private PetStoreApiClient CreatePetStoreServiceClient()
+        private PetStoreApiClient CreatePetStoreClient()
         {
             string baseAddres = GetAppSetting("PetStoreClientBaseAddress");
             string apiKey = GetAppSetting("PetStoreClientApiKey");

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Text;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 using eimprovement.WebApplication.Client.Models;
-using System.Text;
-using Newtonsoft.Json.Serialization;
 
 namespace eimprovement.WebApplication.Client
 {
@@ -30,7 +30,8 @@ namespace eimprovement.WebApplication.Client
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new PetStoreApiException($"Failed to retrieve pets with status available from petstore api. Api returned Status: {response.StatusCode}");
+                throw new PetStoreApiException(
+                    $"Failed to retrieve pets with status available from petstore api. Api returned Status: {response.StatusCode}");
             }
 
             return await ReadContentAsAsync<List<PetResource>>(response);
@@ -43,7 +44,8 @@ namespace eimprovement.WebApplication.Client
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new PetStoreApiException($"Failed to add find pet in petstore api. Pet Id = {petId}. Api returned Status: {response.StatusCode}");
+                throw new PetStoreApiException(
+                    $"Failed to add find pet in petstore api. Pet Id = {petId}. Api returned Status: {response.StatusCode}");
             }
 
             return await ReadContentAsAsync<PetResource>(response);
@@ -58,7 +60,8 @@ namespace eimprovement.WebApplication.Client
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new PetStoreApiException($"Failed to add new pet to petstore api. Api returned Status: {response.StatusCode}");
+                throw new PetStoreApiException(
+                    $"Failed to add new pet to petstore api. Api returned Status: {response.StatusCode}");
             }
         }
 
@@ -71,7 +74,8 @@ namespace eimprovement.WebApplication.Client
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new PetStoreApiException($"Failed to update pet in petstore api. Pet Id = {pet.Id}. Api returned Status: {response.StatusCode}");
+                throw new PetStoreApiException(
+                    $"Failed to update pet in petstore api. Pet Id = {pet.Id}. Api returned Status: {response.StatusCode}");
             }
         }
 
@@ -82,7 +86,8 @@ namespace eimprovement.WebApplication.Client
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new PetStoreApiException($"Unable to delete pet from petstore api. Pet Id = {petId}. Api returned Status: {response.StatusCode}");
+                throw new PetStoreApiException(
+                    $"Unable to delete pet from petstore api. Pet Id = {petId}. Api returned Status: {response.StatusCode}");
             }
         }
 
