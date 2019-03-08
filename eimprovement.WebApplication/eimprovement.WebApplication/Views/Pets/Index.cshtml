@@ -1,4 +1,6 @@
-﻿@model IEnumerable<eimprovement.WebApplication.Models.PetViewModel>
+﻿@using PagedList.Mvc
+@model eimprovement.WebApplication.Models.PetIndexViewModel
+
 
 @{
     ViewBag.Title = "Pets Home Page";
@@ -37,12 +39,12 @@
 
 <div class="jumbotron">
     <h1>PetStore Online</h1>
-    <p class="lead">Welcome to the Pet viewer and Editor Application</p>
+    <p class="lead">Welcome to the pet viewer and editor application</p>
 </div>
 
 <h2>Pet List</h2>
 <p>
-    @Html.ActionLink("Add new pet", "Add", null, new { @class = "btn btn-primary" } )
+    @Html.ActionLink("Add new pet", "Add", null, new { @class = "btn btn-primary" })
 </p>
 
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
@@ -50,17 +52,29 @@
     @Html.AntiForgeryToken()
 }
 
+
+@using (Html.BeginForm("Index", "Pets", FormMethod.Get))
+{
+    <div class="form-group">
+        <label>Filter by name</label>
+        @Html.TextBox("NameFilter", Model.NameFilter, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Filter" class="btn btn-primary" />
+    </div>
+}
+
 <div class="row">
     <div class="col-md-12">
         <table class="table">
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    Pet name
                 </th>
                 <th></th>
             </tr>
 
-            @foreach (var item in Model)
+            @foreach (var item in Model.PagedPets)
             {
                 <tr>
                     <td>
@@ -73,5 +87,7 @@
                 </tr>
             }
         </table>
+        @Html.PagedListPager(Model.PagedPets, page => Url.Action("Index", new { page, currentNameFilter = Model.NameFilter }))
+        <p>Page @(Model.PagedPets.PageCount < Model.PagedPets.PageNumber ? 0 : Model.PagedPets.PageNumber) of @Model.PagedPets.PageCount</p>
     </div>
 </div>
