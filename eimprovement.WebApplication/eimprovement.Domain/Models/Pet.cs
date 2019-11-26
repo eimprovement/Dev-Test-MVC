@@ -9,7 +9,7 @@ namespace eimprovement.Domain.Models
 
     public class Pet
     {
-        public int id { get; set; }
+        public Int64 id { get; set; }
         public Category category { get; set; }
         public string name { get; set; }
         public string[] photoUrls { get; set; }
