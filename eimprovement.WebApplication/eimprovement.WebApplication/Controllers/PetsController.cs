@@ -1,5 +1,6 @@
 ﻿using eimprovement.Domain.Models;
 using eimprovement.Domain.Services;
+using eimprovement.WebApplication.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -56,6 +57,42 @@ namespace eimprovement.WebApplication.Controllers
 
 
 
+        }
+
+        public ActionResult Details(Int64 id)
+        {
+            Pet pet = new Pet();
+
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.BaseAddress = new Uri(baseUrl);
+                httpClient.DefaultRequestHeaders.Clear();
+                //Define request data format  
+                httpClient.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+                httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "4a974f8b78da4c2192f5fccc034b8686");
+                var getTask = httpClient.GetAsync(id.ToString());
+
+                getTask.Wait();
+
+                var result = getTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readPet = result.Content.ReadAsAsync<Pet>();
+                    readPet.Wait();
+
+                    pet = readPet.Result;
+                }
+                else
+                {
+                    // log the error here
+                    pet = null;
+                    ModelState.AddModelError(string.Empty, "Server error");
+                    return View("NotFound");
+                }
+
+                return View(pet);
+            }
         }
     }
 }
