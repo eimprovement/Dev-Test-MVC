@@ -221,6 +221,8 @@
     <Content Include="Views\Pets\Index.cshtml" />
     <Content Include="Views\Pets\Details.cshtml" />
     <Content Include="Views\Pets\Create.cshtml" />
+    <Content Include="Views\Pets\NotFound.cshtml" />
+    <Content Include="Views\Pets\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -155,5 +155,103 @@ namespace eimprovement.WebApplication.Controllers
             }
 
         }
+
+        [HttpGet]
+        public ActionResult Edit(Int64 id)
+        {
+
+            Pet pet = new Pet();
+
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.BaseAddress = new Uri(baseUrl);
+                httpClient.DefaultRequestHeaders.Clear();
+                //Define request data format  
+                httpClient.DefaultRequestHeaders.Accept.Add(
+                    new MediaTypeWithQualityHeaderValue("application/json"));
+                httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "4a974f8b78da4c2192f5fccc034b8686");
+                var getTask = httpClient.GetAsync(id.ToString());
+                getTask.Wait();
+
+                var result = getTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readPet = result.Content.ReadAsAsync<Pet>();
+                    readPet.Wait();
+
+                    pet = readPet.Result;
+                }
+                else
+                {
+                    // log the error here
+                    pet = null;
+                    ModelState.AddModelError(string.Empty, "Server error");
+                    return View("NotFound");
+                }
+            }
+
+            return View(pet);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(Pet model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                // build Pet domain model from view model
+                Pet editPet = new Pet
+                {
+                    id = model.id,
+                    name = model.name,
+                    category = new Category
+                    {
+                        id = 1,
+                        name = "Canine"
+                    },
+                    //Category = new Category { id = model.Category.id, name = model.Category.name },
+                    photoUrls = new string[] { "cutedoggieurl" },
+                    status = model.status,
+                    tags = new[] { new Tag { id = 1, name = "cute" } }
+                };
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.BaseAddress = new Uri(baseUrl);
+
+                    httpClient.DefaultRequestHeaders.Clear();
+                    //Define request data format  
+                    httpClient.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json"));
+                    httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "4a974f8b78da4c2192f5fccc034b8686");
+
+                    var putTask = httpClient.PutAsJsonAsync("", editPet);
+                    putTask.Wait();
+                    var response = putTask.Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Details", new { id = editPet.id });
+                        //return View("Details", editPet);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Server Error");
+                        return View();
+                    }
+                }
+
+
+            }
+            else
+            {
+                return View();
+            }
+
+
+
+        }
+
     }
 }
