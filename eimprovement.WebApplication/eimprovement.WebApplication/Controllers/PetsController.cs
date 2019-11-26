@@ -1,5 +1,6 @@
 ﻿using eimprovement.Domain.Models;
 using eimprovement.Domain.Services;
+using eimprovement.WebApplication.Helpers;
 using eimprovement.WebApplication.Models;
 using Newtonsoft.Json;
 using System;
@@ -93,6 +94,66 @@ namespace eimprovement.WebApplication.Controllers
 
                 return View(pet);
             }
+        }
+
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(PetCreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // build Pet domain model from view model
+                Pet newPet = new Pet
+                {
+                    id = model.id,
+                    category = new Category
+                    {
+                        id = (Int64)model.category,
+                        name = StringEnum.GetStringFromEnum(model.category)
+                    },
+                    name = model.name,
+                    photoUrls = new string[] { "cutedoggieurl" },
+                    tags = new[] { new Tag { id = 1, name = "cute" } },
+                    status = StringEnum.GetStringFromEnum(model.status)
+                };
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.BaseAddress = new Uri(baseUrl);
+
+                    httpClient.DefaultRequestHeaders.Clear();
+                    //Define request data format  
+                    httpClient.DefaultRequestHeaders.Accept.Add(
+                        new MediaTypeWithQualityHeaderValue("application/json"));
+                    httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "4a974f8b78da4c2192f5fccc034b8686");
+                    var postTask = httpClient.PostAsJsonAsync<Pet>("", newPet);
+                    postTask.Wait();
+                    var response = postTask.Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Server Error");
+                    }
+
+                }
+                return RedirectToAction("Details", new { id = newPet.id });
+            }
+            else
+            {
+                // go back to Create view
+                return View();
+            }
+
         }
     }
 }
