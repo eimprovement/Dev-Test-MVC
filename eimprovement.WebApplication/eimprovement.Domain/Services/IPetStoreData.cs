@@ -9,7 +9,7 @@ namespace eimprovement.Domain.Services
 {
     public interface IPetStoreData
     {
-        IEnumerable<Pet> GetAll();
+        IEnumerable<Status> GetAll();
         Pet Get(Int64 id);
         IEnumerable<Pet> FindByStatus(string status);
         Int64 Add(Pet pet);
