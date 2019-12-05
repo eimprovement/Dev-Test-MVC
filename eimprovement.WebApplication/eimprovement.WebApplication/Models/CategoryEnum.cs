@@ -8,11 +8,11 @@ namespace eimprovement.WebApplication.Models
 {
     public enum CategoryEnum
     {
-        [StringValue("Canine")]
+        [StringValue("canine")]
         Canine = 1,
-        [StringValue("Feline")]
+        [StringValue("feline")]
         Feline = 2,
-        [StringValue("Reptile")]
+        [StringValue("reptile")]
         Reptile = 3
     }
 }

@@ -176,6 +176,7 @@
     <Compile Include="Helpers\StringValue.cs" />
     <Compile Include="Models\CategoryEnum.cs" />
     <Compile Include="Models\PetCreateViewModel.cs" />
+    <Compile Include="Models\PetViewModel.cs" />
     <Compile Include="Models\StatusEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

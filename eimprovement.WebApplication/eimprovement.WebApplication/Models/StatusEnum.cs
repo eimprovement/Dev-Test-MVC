@@ -8,11 +8,11 @@ namespace eimprovement.WebApplication.Models
 {
     public enum StatusEnum
     {
-        [StringValue("Available")]
+        [StringValue("available")]
         Available = 1,
-        [StringValue("Held")]
+        [StringValue("held")]
         Held = 2,
-        [StringValue("Sold")]
+        [StringValue("sold")]
         Sold = 3
     }
 }
