@@ -9,10 +9,10 @@ namespace eimprovement.WebApplication.Models
     public enum StatusEnum
     {
         [StringValue("available")]
-        Available = 1,
+        available = 1,
         [StringValue("held")]
-        Held = 2,
+        held = 2,
         [StringValue("sold")]
-        Sold = 3
+        sold = 3
     }
 }

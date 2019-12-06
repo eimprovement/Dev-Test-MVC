@@ -175,8 +175,8 @@
     <Compile Include="Helpers\StringEnum.cs" />
     <Compile Include="Helpers\StringValue.cs" />
     <Compile Include="Models\CategoryEnum.cs" />
-    <Compile Include="Models\PetCreateViewModel.cs" />
     <Compile Include="Models\PetViewModel.cs" />
+    <Compile Include="Models\PetEditViewModel.cs" />
     <Compile Include="Models\StatusEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -225,6 +225,7 @@
     <Content Include="Views\Pets\NotFound.cshtml" />
     <Content Include="Views\Pets\Edit.cshtml" />
     <Content Include="Views\Pets\Delete.cshtml" />
+    <Content Include="Views\Shared\_PetSummary.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

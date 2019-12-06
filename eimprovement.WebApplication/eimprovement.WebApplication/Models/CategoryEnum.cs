@@ -8,6 +8,8 @@ namespace eimprovement.WebApplication.Models
 {
     public enum CategoryEnum
     {
+        [StringValue("None")]
+        None = 0,
         [StringValue("canine")]
         Canine = 1,
         [StringValue("feline")]

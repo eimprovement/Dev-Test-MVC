@@ -5,20 +5,12 @@ namespace eimprovement.WebApplication.Models
 {
     public class PetViewModel
     {
-        [Required]
         [Display(Name = "Pet ID")]
         public Int64 id { get; set; }
-        [Required]
-        [Range(1, 3, ErrorMessage = "Please select a valid catetory")]
-        [Display(Name = "Category")]
-        public CategoryEnum category { get; set; }
-        [Required]
-        [Display(Name = "Name")]
-        public string name { get; set; }
-        public string[] photoUrls { get; set; }
-        [Required]
-        [Range(1, 3, ErrorMessage = "Please select a valid status")]
-        [Display(Name = "Status")]
-        public StatusEnum status { get; set; }
+        public string Category { get; set; }
+        public string Name { get; set; }
+        public string[] PhotoUrls { get; set; }
+        public string[] Tags { get; set; }
+        public string Status { get; set; }
     }
 }

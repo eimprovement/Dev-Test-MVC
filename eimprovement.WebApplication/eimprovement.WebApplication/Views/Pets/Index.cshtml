@@ -1,45 +1,16 @@
-﻿@model IEnumerable<eimprovement.Domain.Models.Pet>
+﻿@model IEnumerable<eimprovement.WebApplication.Models.PetViewModel>
 
 @{
     ViewBag.Title = "Our Pets";
 }
 
-<h2>Available Pets</h2>
+<h2>Pets in Our Store</h2>
 
 <p>
-    @Html.ActionLink("Add a new pet", "Create")
+    @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.status)
-        </th>
-        <th>
-            @Html.DisplayName("Category")
-        </th>
-    </tr>
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.category.name)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.id })
-            </td>
-        </tr>
-    }
-
-</table>
+@foreach (var item in Model)
+{
+    @Html.Partial("_PetSummary", item)
+}

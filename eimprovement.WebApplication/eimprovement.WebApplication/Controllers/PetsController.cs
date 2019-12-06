@@ -16,6 +16,8 @@ namespace eimprovement.WebApplication.Controllers
     {
         // used for injection from Db source during development
         // IPetStoreData _data;
+
+        // pull the key from the config file
         string baseUrl = "https://dev-test.azure-api.net/petstore/pet/";
 
         public PetsController(IPetStoreData data)
@@ -23,14 +25,18 @@ namespace eimprovement.WebApplication.Controllers
             // this._data = data; // not using for API service
         }
         // GET: Pets
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string choice)
         {
+            string status = "available";
 
-            // not the preferred method for using HttpClient 
-            // which are designed for long life. Would move into a 
-            // Service project and continue the IoC pattern 
+            if (!string.IsNullOrEmpty(choice))
+            {
+                status = choice;
+            }
 
             List<Pet> model = new List<Pet>();
+
+            List<PetViewModel> models = new List<PetViewModel>();
 
             using (var httpClient = new HttpClient())
             {
@@ -41,28 +47,28 @@ namespace eimprovement.WebApplication.Controllers
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "4a974f8b78da4c2192f5fccc034b8686");
-                HttpResponseMessage result = await httpClient.GetAsync("findByStatus?status=available");
+                HttpResponseMessage result = await httpClient.GetAsync("findByStatus?status=" + status);
 
                 if (result.IsSuccessStatusCode)
                 {
                     var petResponse = result.Content.ReadAsStringAsync().Result;
                     model = JsonConvert.DeserializeObject<List<Pet>>(petResponse);
+                    string categoryName;
+                    foreach (var mod in model)
+                    {
+                        models.Add(BuildViewModelFromEntity(mod));
+                    }
                 }
 
-                return View(model);
+                return View(models);
             }
-
-            // mockup data used while building out the client scaffolding
-            // var model = _data.FindByStatus("available");
-            //return View(model);
-
-
-
         }
 
-        public ActionResult Details(Int64 id)
+        [HttpGet]
+        public async Task<ActionResult> Details(Int64 id)
         {
             Pet pet = new Pet();
+            PetViewModel model;
 
             using (var httpClient = new HttpClient())
             {
@@ -72,17 +78,18 @@ namespace eimprovement.WebApplication.Controllers
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "4a974f8b78da4c2192f5fccc034b8686");
-                var getTask = httpClient.GetAsync(id.ToString());
-
-                getTask.Wait();
-
-                var result = getTask.Result;
+                var result = await httpClient.GetAsync(id.ToString()); 
+                
+                
                 if (result.IsSuccessStatusCode)
                 {
                     var readPet = result.Content.ReadAsAsync<Pet>();
                     readPet.Wait();
 
                     pet = readPet.Result;
+
+                    // category not guaranteed
+                    model = BuildViewModelFromEntity(pet);
                 }
                 else
                 {
@@ -92,7 +99,7 @@ namespace eimprovement.WebApplication.Controllers
                     return View("NotFound");
                 }
 
-                return View(pet);
+                return View(model);
             }
         }
 
@@ -104,24 +111,12 @@ namespace eimprovement.WebApplication.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(PetCreateViewModel model)
+        public async Task<ActionResult> Create(PetEditViewModel model)
         {
             if (ModelState.IsValid)
             {
                 // build Pet domain model from view model
-                Pet newPet = new Pet
-                {
-                    id = model.id,
-                    category = new Category
-                    {
-                        id = (Int64)model.category,
-                        name = StringEnum.GetStringFromEnum(model.category)
-                    },
-                    name = model.name,
-                    photoUrls = new string[] { "cutedoggieurl" },
-                    tags = new[] { new Tag { id = 1, name = "cute" } },
-                    status = StringEnum.GetStringFromEnum(model.status)
-                };
+                Pet newPet = BuildPetEntity(model);
 
                 using (var httpClient = new HttpClient())
                 {
@@ -132,21 +127,19 @@ namespace eimprovement.WebApplication.Controllers
                     httpClient.DefaultRequestHeaders.Accept.Add(
                         new MediaTypeWithQualityHeaderValue("application/json"));
                     httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "4a974f8b78da4c2192f5fccc034b8686");
-                    var postTask = httpClient.PostAsJsonAsync<Pet>("", newPet);
-                    postTask.Wait();
-                    var response = postTask.Result;
+                    var response = await httpClient.PostAsJsonAsync<Pet>("", newPet);
 
                     if (response.IsSuccessStatusCode)
                     {
-                        return RedirectToAction("Index");
+                        TempData["message"] = "You have successfully added this pet.";
+                        return RedirectToAction("Details", new { id = newPet.id });
                     }
                     else
                     {
                         ModelState.AddModelError(string.Empty, "Server Error");
+                        return View("Error");
                     }
-
                 }
-                return RedirectToAction("Details", new { id = newPet.id });
             }
             else
             {
@@ -157,10 +150,10 @@ namespace eimprovement.WebApplication.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(Int64 id)
+        public async Task<ActionResult> Edit(Int64 id)
         {
-
             Pet pet = new Pet();
+            PetEditViewModel model;
 
             using (var httpClient = new HttpClient())
             {
@@ -170,16 +163,16 @@ namespace eimprovement.WebApplication.Controllers
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "4a974f8b78da4c2192f5fccc034b8686");
-                var getTask = httpClient.GetAsync(id.ToString());
-                getTask.Wait();
+                var result = await httpClient.GetAsync(id.ToString());
 
-                var result = getTask.Result;
                 if (result.IsSuccessStatusCode)
                 {
                     var readPet = result.Content.ReadAsAsync<Pet>();
                     readPet.Wait();
 
                     pet = readPet.Result;
+
+                    model = BuildEditViewModelFromEntity(pet);
                 }
                 else
                 {
@@ -190,31 +183,18 @@ namespace eimprovement.WebApplication.Controllers
                 }
             }
 
-            return View(pet);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Pet model)
+        public async Task<ActionResult> Edit(PetEditViewModel model)
         {
 
             if (ModelState.IsValid)
             {
                 // build Pet domain model from view model
-                Pet editPet = new Pet
-                {
-                    id = model.id,
-                    name = model.name,
-                    category = new Category
-                    {
-                        id = 1,
-                        name = "Canine"
-                    },
-                    //Category = new Category { id = model.Category.id, name = model.Category.name },
-                    photoUrls = new string[] { "cutedoggieurl" },
-                    status = model.status,
-                    tags = new[] { new Tag { id = 1, name = "cute" } }
-                };
+                Pet editPet = BuildPetEntity(model);
 
                 using (var httpClient = new HttpClient())
                 {
@@ -226,14 +206,12 @@ namespace eimprovement.WebApplication.Controllers
                         new MediaTypeWithQualityHeaderValue("application/json"));
                     httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "4a974f8b78da4c2192f5fccc034b8686");
 
-                    var putTask = httpClient.PutAsJsonAsync("", editPet);
-                    putTask.Wait();
-                    var response = putTask.Result;
+                    var response = await httpClient.PutAsJsonAsync("", editPet);
 
                     if (response.IsSuccessStatusCode)
                     {
+                        TempData["message"] = "You have updated this pet.";
                         return RedirectToAction("Details", new { id = editPet.id });
-                        //return View("Details", editPet);
                     }
                     else
                     {
@@ -241,8 +219,6 @@ namespace eimprovement.WebApplication.Controllers
                         return View();
                     }
                 }
-
-
             }
             else
             {
@@ -254,9 +230,10 @@ namespace eimprovement.WebApplication.Controllers
         }
 
         [HttpGet]
-        public ActionResult Delete(Int64 id)
+        public async Task<ActionResult> Delete(Int64 id)
         {
             Pet pet = new Pet();
+            PetViewModel model;
 
             using (var httpClient = new HttpClient())
             {
@@ -266,16 +243,25 @@ namespace eimprovement.WebApplication.Controllers
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "4a974f8b78da4c2192f5fccc034b8686");
-                var getTask = httpClient.GetAsync(id.ToString());
-                getTask.Wait();
 
-                var result = getTask.Result;
+                var result = await httpClient.GetAsync(id.ToString());
+
                 if (result.IsSuccessStatusCode)
                 {
                     var readPet = result.Content.ReadAsAsync<Pet>();
                     readPet.Wait();
 
                     pet = readPet.Result;
+                    string categoryName = pet.category != null ? pet.category.name : "Not specified";
+                    model = new PetViewModel
+                    {
+                        id = pet.id,
+                        Name = pet.name,
+                        Category = categoryName,
+                        PhotoUrls = pet.photoUrls,
+                        Status = pet.status
+                    };
+
                 }
                 else
                 {
@@ -286,13 +272,13 @@ namespace eimprovement.WebApplication.Controllers
                 }
             }
 
-            return View(pet);
+            return View(model);
 
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(Pet model)
+        public async Task<ActionResult> Delete(Pet model)
         {
             Pet pet = new Pet();
             var id = model.id;
@@ -305,13 +291,11 @@ namespace eimprovement.WebApplication.Controllers
                 httpClient.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "4a974f8b78da4c2192f5fccc034b8686");
-                var deleteTask = httpClient.DeleteAsync(id.ToString());
+                var response = await httpClient.DeleteAsync(id.ToString());
 
-                deleteTask.Wait();
-
-                var result = deleteTask.Result;
-                if (result.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
                 {
+                    TempData["message"] = "You deleted " + id.ToString();
                     return RedirectToAction("Index");
                 }
                 else
@@ -324,6 +308,59 @@ namespace eimprovement.WebApplication.Controllers
             }
         }
 
+        #region helper methods
+
+        private static Pet BuildPetEntity(PetEditViewModel model)
+        {
+            return new Pet
+            {
+                id = model.id,
+                category = new Category
+                {
+                    id = (Int64)model.category,
+                    name = StringEnum.GetStringFromEnum(model.category)
+                },
+                name = model.name,
+                photoUrls = new string[] { "cutedoggieurl" },
+                tags = new[] { new Tag { id = 1, name = "cute" } },
+                status = StringEnum.GetStringFromEnum(model.status)
+            };
+        }
+
+        private static PetViewModel BuildViewModelFromEntity(Pet pet)
+        {
+            string categoryName = pet.category != null ? pet.category.name : "Not specified";
+            return new PetViewModel
+            {
+                id = pet.id,
+                Name = pet.name,
+                Category = categoryName,
+                PhotoUrls = pet.photoUrls,
+                Status = pet.status
+            };
+        }
+
+        private static PetEditViewModel BuildEditViewModelFromEntity(Pet pet)
+        {
+            PetEditViewModel model;
+            StatusEnum valueAsEnumFromString;
+            Enum.TryParse<StatusEnum>(pet.status, out valueAsEnumFromString);
+            var values = Enum.GetValues(typeof(StatusEnum));
+
+            // category not guaranteed
+            long categoryId = pet.category != null ? pet.category.id : 0;
+            model = new PetEditViewModel()
+            {
+                id = pet.id,
+                category = (CategoryEnum)categoryId,
+                name = pet.name,
+                photoUrls = pet.photoUrls,
+                status = valueAsEnumFromString
+            };
+            return model;
+        }
+
+        #endregion
 
     }
 }

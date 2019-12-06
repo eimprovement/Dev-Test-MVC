@@ -1,13 +1,13 @@
-﻿@model eimprovement.Domain.Models.Pet
+﻿@model eimprovement.WebApplication.Models.PetViewModel
 
 @{
     ViewBag.Title = "Pet Details";
 }
 
-<h2>Details for @Html.DisplayFor(model => model.name)</h2>
+<h2>Details for @Html.DisplayFor(model => model.Name)</h2>
 
 <div>
-    <h4>Pet</h4>
+    <h4>Pet Details</h4>
     <hr />
     <dl class="dl-horizontal">
 
@@ -18,33 +18,33 @@
             @Html.DisplayFor(model => model.id)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.name)
+            @Html.DisplayNameFor(model => model.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.name)
+            @Html.DisplayFor(model => model.Name)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.status)
+            @Html.DisplayNameFor(model => model.Status)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.status)
+            @Html.DisplayFor(model => model.Status)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.category.name)
+            @Html.DisplayNameFor(model => model.Category)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.category.name)
+            @Html.DisplayFor(model => model.Category)
         </dd>
     </dl>
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index", new { choice = Model.Status })
 </p>
 
 
