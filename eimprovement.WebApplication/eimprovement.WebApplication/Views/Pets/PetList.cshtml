@@ -1,0 +1,137 @@
+﻿
+@{
+    ViewBag.Title = "PetList";
+    var soldPetlist = ViewBag.soldPets;
+    var availablePetlist = ViewBag.availablePets;
+    var pendingPetlist = ViewBag.pendingPets;
+}
+<br />
+<div class="row">
+    <div class="col-md-4">
+        <button type="button" class="btn btn-primary" onclick="ShowAddPetModal()">Add Pet</button>
+    </div>
+</div>
+
+<br />
+
+<!-- Tabs -->
+
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#available">Available Pets</a></li>
+    <li><a data-toggle="tab" href="#pending">Pending Pets</a></li>
+    <li><a data-toggle="tab" href="#sold">Sold Pets</a></li>
+</ul>
+
+<div class="tab-content">
+    <!-- Active Pets Tab-->
+    <div id="available" class="tab-pane fade in active">
+        <h2>Available PetList</h2>
+        <table id="table" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pet in availablePetlist)
+                {
+                    <tr onclick="showEditPetModal(@pet.id)">
+                        <td>@pet.id</td>
+                        <td>@pet.name</td>
+                        <td>@pet.status</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- Pending Pets Tab-->
+    <div id="pending" class="tab-pane fade">
+        <h2>Pending PetList</h2>
+        <table id="table" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pet in pendingPetlist)
+                {
+                    <tr onclick="showEditPetModal(@pet.id)">
+                        <td>@pet.id</td>
+                        <td>@pet.name</td>
+                        <td>@pet.status</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- Sold Pets Tab-->
+    <div id="sold" class="tab-pane fade">
+        <h2>Sold PetList</h2>
+        <table id="table" class="table table-bordered table-hover datatable ">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pet in soldPetlist)
+                {
+                    <tr onclick="showEditPetModal(@pet.id)">
+                        <td>@pet.id</td>
+                        <td>@pet.name</td>
+                        <td>@pet.status</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="editPetModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div id="editPetModalContent" class="modal-content">
+            <!-- Modal content-->
+        </div>
+    </div>
+</div>
+
+<div id="addPetModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div id="addPetModalContent" class="modal-content">
+            <!-- Modal content-->
+        </div>
+    </div>
+</div>
+
+<div id="waitingModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <div id="waitingModalContent" class="modal-content">
+            <div class="modal-body">
+                <!-- Modal content-->
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="successModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <div id="successModalContent" class="modal-content">
+            <div class="modal-body">
+                <!-- Modal content-->
+                <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading">Successful operation!!</h4>
+                    <p>The operation was correctly done.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
