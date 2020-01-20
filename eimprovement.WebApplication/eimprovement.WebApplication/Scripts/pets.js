@@ -1,8 +1,9 @@
 ﻿
-function showSuccessModal() {
-    $('#successModal').modal('show');
-    setTimeout(function () { $('#successModal').modal('hide'); }, 2000);
+function showAlertModal(modalName) {
+    $('#' + modalName).modal('show');
+    setTimeout(function () { $('#' + modalName).modal('hide'); }, 2000);
 }
+
 
 function showEditPetModal(id) {
     $('#waitingModal').modal('show');
@@ -14,6 +15,10 @@ function showEditPetModal(id) {
             $('#waitingModal').modal('hide');
             $("#editPetModalContent").html(data);
             $('#editPetModal').modal('show');
+        },
+        error: function () {
+            $('#waitingModal').modal('hide');
+            showAlertModal("errorModal");
         }
     });
 }
@@ -40,7 +45,7 @@ function addPet() {
         success: function (data) {
             $('#addPetModal').modal('hide');
             $("#addPetModalContent").html("");
-            showSuccessModal();
+            showAlertModal("successModal");
             location.reload(true);
         }
     });
@@ -58,7 +63,7 @@ function updatePet() {
         success: function (data) {
             $('#editPetModal').modal('hide');
             $("#editPetModalContent").html("");
-            showSuccessModal();
+            showAlertModal("successModal");
             location.reload(true);
         }
     });
@@ -76,7 +81,7 @@ function deletePet(id) {
         success: function (data) {
             $('#editPetModal').modal('hide');
             $("#editPetModalContent").html("");
-            showSuccessModal();
+            showAlertModal("successModal");
             location.reload(true);
         }
     });
