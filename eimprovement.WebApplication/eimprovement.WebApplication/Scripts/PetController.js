@@ -4,15 +4,29 @@ var app = angular.module("PetManagement", []);
 // Controller Part
 app.controller("PetController", function ($scope, $http) {
 
-
     $scope.pets = [];
     $scope.petForm = {
-        id: null,
+        id: -1,
         name: "",
-        status: ""
+        status: "available",
+        category : {
+            id: 1,
+            name: "animal"
+        }
     };
     $scope.baseUrl = window._env.baseUrl;
     $scope.apiKey = window._env.apiKey;
+    $scope.Status = ['available', 'unavailable'];
+    $scope.Category = [{
+        "id": 1,
+        "name": "animal"
+    }, {
+        "id": 2,
+        "name": "bird"
+    }, {
+        "id": 3,
+        "name": "fish"
+    }];
  
     _refreshPetData();       
   
@@ -23,7 +37,7 @@ app.controller("PetController", function ($scope, $http) {
         var method = "";
         var url = $scope.baseUrl;
 
-        if ($scope.petForm.id == null)
+        if ($scope.petForm.id == null || $scope.petForm.id < 0)
         {
             method = "POST";           
         }
@@ -71,6 +85,8 @@ app.controller("PetController", function ($scope, $http) {
         $scope.petForm.id = pet.id;
         $scope.petForm.name = pet.name;
         $scope.petForm.status = pet.status;
+        $scope.petForm.category.id = pet.category.id;
+        $scope.petForm.category.name = pet.category.name;
     };
 
     // Private Method  
@@ -109,8 +125,10 @@ app.controller("PetController", function ($scope, $http) {
 
     // Clear the form
     function _clearFormData() {
-        $scope.petForm.id = null;
+        $scope.petForm.id = -1;
         $scope.petForm.name = "";
-        $scope.petForm.status = "";
+        $scope.petForm.status = "available";
+        $scope.petForm.category.id = 1;
+        $scope.petForm.category.name = "animal";
     };
 });

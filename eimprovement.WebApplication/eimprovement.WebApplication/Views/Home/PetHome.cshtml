@@ -16,10 +16,19 @@
                     <input type="hidden" ng-model="petForm.id" />
                     <input type="text" ng-model="petForm.name" />
                 </td>
-            </tr>
+            </tr>            
             <tr>
                 <td>Status</td>
-                <td><input type="text" ng-model="petForm.status" /></td>
+                <td><select ng-options="status for status in Status" ng-model="petForm.status"></select></td>
+            </tr>
+            <tr>
+                <td>Category</td>
+                <td>
+                    
+                    <select ng-model="petForm.category" data-ng-options="category.name for category in Category track by category.id" >           
+                        
+                    </select>                    
+                </td>
             </tr>
             <tr>
                 <td colspan="2">
@@ -35,6 +44,7 @@
             <th>ID</th>
             <th>Name</th>
             <th>Status</th>
+            <th>Category</th>
             <th>Edit</th>
             <th>Delete</th>
         </tr>
@@ -43,6 +53,7 @@
             <td> {{ pet.id }}</td>
             <td> {{ pet.name }}</td>
             <td> {{ pet.status }}</td>
+            <td> {{ pet.category.name }}</td>
             <td>
                 <a ng-click="editPet(pet)" class="edit-button">Edit</a>
             </td>
