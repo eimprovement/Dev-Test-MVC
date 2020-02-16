@@ -1,0 +1,54 @@
+﻿<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.js"></script>
+<script src="~/Scripts/configs.js"></script>
+<script src="~/Scripts/PetController.js"></script>
+@{
+    ViewBag.Title = "Pet Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Welcome to Pet Home</h2>
+<div id="customer" ng-app="PetManagement" ng-controller="PetController">
+    <form ng-submit="submitPet()">
+        <table border="0">
+            <tr>
+                <td>Pet Name</td>
+                <td>
+                    <input type="hidden" ng-model="petForm.id" />
+                    <input type="text" ng-model="petForm.name" />
+                </td>
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td><input type="text" ng-model="petForm.status" /></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="submit" value="Submit" class="blue-button" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    <br />
+    <a class="create-button" ng-click="createPet()">Create Pet</a>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+
+        <tr ng-repeat="pet in pets  | orderBy:'-id'">
+            <td> {{ pet.id }}</td>
+            <td> {{ pet.name }}</td>
+            <td> {{ pet.status }}</td>
+            <td>
+                <a ng-click="editPet(pet)" class="edit-button">Edit</a>
+            </td>
+            <td>
+                <a ng-click="deletePet(pet)" class="delete-button">Delete</a>
+            </td>
+        </tr>
+    </table>
+</div>
