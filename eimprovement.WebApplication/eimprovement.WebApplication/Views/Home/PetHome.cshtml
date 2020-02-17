@@ -32,17 +32,18 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
-                    <input type="submit" value="Submit" class="blue-button" />
+                <td colspan="2"><br />
+                    <input type="submit" value="Save Pet" class="blue-button" />&nbsp; <input type="button" value="Reset" ng-click="createPet()" class="blue-button" /><br />
                 </td>
             </tr>
         </table>
     </form>
     <br />
-    <a ng-click="createPet()">Create Pet</a><br />
+    
+    <br />Find pet by ID: <input type="text" ng-model="petID" />&nbsp;<input type="button" value="Search" ng-click="findPet()" class="blue-button" />&nbsp;<input type="button" value="Reset Search" ng-click="resetSearch()" class="blue-button" /><br />
     <br />View <select ng-model="viewby" ng-change="setItemsPerPage(viewby)"><option>5</option><option>10</option><option>20</option><option>30</option><option>40</option><option>50</option></select> records at a time.<br />
     <pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" items-per-page="itemsPerPage"></pagination>
-    <table border="1">
+    <table border="1" style="min-width:70%;">
         <tr>
             <th>ID</th>
             <th>Name</th>
@@ -57,11 +58,11 @@
             <td> {{ pet.name }}</td>
             <td> {{ pet.status }}</td>
             <td> {{ pet.category.name }}</td>
-            <td>
-                <a ng-click="editPet(pet)" class="edit-button">Edit</a>
+            <td>                
+                <input type="button" value="Edit" ng-click="editPet(pet)" class="blue-button" />
             </td>
-            <td>
-                <a ng-click="deletePet(pet)" class="delete-button">Delete</a>
+            <td>                
+                <input type="button" value="Delete" ng-click="deletePet(pet)" class="blue-button" />
             </td>
         </tr>
     </table>

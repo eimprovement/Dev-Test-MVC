@@ -28,6 +28,7 @@ app.controller("PetController", function ($scope, $http) {
         "name": "fish"
     }];
 
+    $scope.petID = null;
     $scope.viewby = 10;
     $scope.currentPage = 1;
     $scope.itemsPerPage = $scope.viewby;
@@ -128,6 +129,31 @@ app.controller("PetController", function ($scope, $http) {
                 console.log("Error: " + res.status + " : " + res.data);
             }
         );
+    }
+
+    $scope.findPet = function () {
+        $http({
+            method: 'GET',
+            url: $scope.baseUrl + '/' + $scope.petID,
+            headers: {
+                'Ocp-Apim-Subscription-Key': $scope.apiKey
+            }
+        }).then(
+            function (res) { // success               
+                $scope.pets = [];
+                if (res.data != null) {                    
+                    $scope.pets.push(res.data);
+                }
+                
+                $scope.totalItems = $scope.pets.length;
+            },
+            function (res) { // error
+                console.log("Error: " + res.status + " : " + res.data);
+            }
+        );
+    }
+    $scope.resetSearch = function () {
+        _refreshPetData();
     }
 
     function _success(res) {
