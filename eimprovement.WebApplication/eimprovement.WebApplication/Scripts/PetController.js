@@ -1,5 +1,5 @@
 ﻿
-var app = angular.module("PetManagement", []);
+var app = angular.module("PetManagement", ['ui.bootstrap']);
 
 // Controller Part
 app.controller("PetController", function ($scope, $http) {
@@ -27,8 +27,26 @@ app.controller("PetController", function ($scope, $http) {
         "id": 3,
         "name": "fish"
     }];
+
+    $scope.viewby = 10;
+    $scope.currentPage = 1;
+    $scope.itemsPerPage = $scope.viewby;
+    $scope.maxSize = 5; //Number of pager buttons to show
+
+    _refreshPetData(); 
  
-    _refreshPetData();       
+    $scope.setPage = function (pageNo) {
+        $scope.currentPage = pageNo;
+    };
+
+    $scope.pageChanged = function () {
+        console.log('Page changed to: ' + $scope.currentPage);
+    };
+
+    $scope.setItemsPerPage = function (num) {
+        $scope.itemsPerPage = num;
+        $scope.currentPage = 1; //reset to first page
+    }
   
     // HTTP POST/PUT methods for add/edit pet  
     // Call: https://dev-test.azure-api.net/petstore/pet
@@ -39,6 +57,7 @@ app.controller("PetController", function ($scope, $http) {
 
         if ($scope.petForm.id == null || $scope.petForm.id < 0)
         {
+            $scope.petForm.id = null;
             method = "POST";           
         }
         else
@@ -100,9 +119,10 @@ app.controller("PetController", function ($scope, $http) {
                 'Ocp-Apim-Subscription-Key': $scope.apiKey
             }
         }).then(
-            function (res) { // success
-
+            function (res) { // success               
+                
                 $scope.pets = res.data;
+                $scope.totalItems = $scope.pets.length;
             },
             function (res) { // error
                 console.log("Error: " + res.status + " : " + res.data);
